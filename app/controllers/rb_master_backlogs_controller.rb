@@ -68,7 +68,7 @@ class RbMasterBacklogsController < RbApplicationController
              } if @sprint && @sprint.stories.size > 0 && Backlogs.task_workflow(@project) && User.current.allowed_to?(:view_taskboards, @project)
 	links << {:label => l(:label_kanban),
               :url => url_for(:controller => 'rb_kanban', :action => 'show', :only_path => true)
-             } if !@sprint && RbStory.product_backlog(@project).size > 0 && Backlogs.task_workflow(@project) && User.current.allowed_to?(:view_taskboards, @project)
+             } if !@sprint && Setting.respond_to?(:plugin_redmine_project_issue_statuses) && RbStory.product_backlog(@project).size > 0 && Backlogs.task_workflow(@project) && User.current.allowed_to?(:view_taskboards, @project)
     links << {:label =>  l(:label_burndown),
               :url => '#',
               :classname => 'show_burndown_chart'
