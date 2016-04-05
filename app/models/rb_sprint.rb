@@ -50,6 +50,10 @@ class RbSprint < Version
   def stories
     return RbStory.sprint_backlog(self)
   end
+  
+  def product_backlog_stories
+	return RbStory.product_backlog(self.project)
+  end
 
   def points
     return stories.inject(0){|sum, story| sum + story.story_points.to_i}

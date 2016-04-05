@@ -121,7 +121,9 @@ ActionController::Routing::Routes.draw do |map|
     rb.resources  :tasks,            :only => :index,               :controller => :rb_tasks,           :as => "tasks/:story_id"
     rb.resource   :taskboard,        :only => :show,                :controller => :rb_taskboards,      :as => "taskboards/:sprint_id"
     rb.resource   :taskboard,        :only => :current,             :controller => :rb_taskboards,      :as => "projects/:project_id/taskboard"
-
+	rb.resource   :kanban,        :only => :show,                :controller => :rb_kanban,      :as => "kanban/:project_id"
+	rb.resource   :kanban,        :only => :current,             :controller => :rb_kanban,      :as => "projects/:project_id/kanban"
+	
     rb_common_routes rb
   end
 end
@@ -147,6 +149,10 @@ else
             :to => 'rb_taskboards#show', :via => [:get]
   rb_match rb, 'projects/:project_id/taskboard',
             :to => 'rb_taskboards#current', :via => [:get]
+  rb_match rb, 'kanban/:project_id',
+            :to => 'rb_kanban#show', :via => [:get]
+  rb_match rb, 'projects/:project_id/kanban',
+            :to => 'rb_kanban#current', :via => [:get]
   end
 end
 

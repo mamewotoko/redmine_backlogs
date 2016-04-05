@@ -60,6 +60,7 @@ en:
   backlogs_statistics_velocity_stddev: "Velocity standard deviation: %{value} points"
   backlogs_statistics_yield: "Project has good average yield"
   backlogs_statistics_yield_failed: "Project has low average yield"
+  backlogs_new: New
   backlogs_story: Story
   backlogs_story_close_status: "When all Tasks are closed, update Story to:"
   backlogs_story_follow_task_status_close: "Close when all Tasks are closed"
@@ -176,6 +177,7 @@ en:
   label_stories: Stories
   label_stories_tasks: Stories/Tasks
   label_task_board: "Task board"
+  label_kanban: "Kanban board"
   label_view_options: "View options"
   label_webcal: "Webcal Feed"
   rb_auto_refresh: "Auto-refresh backlogs/taskboard (seconds)"
