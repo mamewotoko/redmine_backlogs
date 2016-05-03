@@ -83,7 +83,7 @@ class RbTask < Issue
     end
 
     task = new(attribs)
-    if params['parent_issue_id']
+    if params['parent_issue_id'] && params['parent_issue_id'] != ""
       parent = Issue.find(params['parent_issue_id'])
       task.start_date = parent.start_date
     end

@@ -4,7 +4,7 @@ class RbKanbanController < RbApplicationController
   unloadable
 
   def show
-    stories = RbStory.product_backlog(@project)
+    stories = @sprint.stories
     @story_ids    = stories.map{|s| s.id}
 
     @settings = Backlogs.settings
@@ -38,10 +38,10 @@ class RbKanbanController < RbApplicationController
       @statuses = statuses.select{|s| enabled[s.id]}
     end
 
-    if RbStory.product_backlog(@project).size == 0
+    if @sprint.stories.size == 0
       @last_updated = nil
     else
-      @last_updated = RbTask.where(tracker_id: RbTask.tracker, fixed_version_id: RbStory.product_backlog(@project)[0].fixed_version_id)
+      @last_updated = RbTask.where(tracker_id: RbTask.tracker, fixed_version_id: @sprint.stories[0].fixed_version_id)
                             .order("updated_on DESC").first
     end
 
@@ -53,7 +53,7 @@ class RbKanbanController < RbApplicationController
   def current
     sprint = @project.active_sprint
     if sprint
-      redirect_to :controller => 'rb_kanban', :action => 'show'
+      redirect_to :controller => 'rb_kanban', :action => 'show', :sprint_id => sprint
       return
     end
     respond_to do |format|

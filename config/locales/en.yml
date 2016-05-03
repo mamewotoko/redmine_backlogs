@@ -61,6 +61,7 @@ en:
   backlogs_statistics_yield: "Project has good average yield"
   backlogs_statistics_yield_failed: "Project has low average yield"
   backlogs_new: New
+  backlogs_backlog: Backlog
   backlogs_story: Story
   backlogs_story_close_status: "When all Tasks are closed, update Story to:"
   backlogs_story_follow_task_status_close: "Close when all Tasks are closed"

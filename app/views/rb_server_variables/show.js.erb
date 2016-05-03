@@ -82,7 +82,7 @@ if (!RB.constants) {
   RB.constants.sprint_id = <%= @sprint.id %>;
   RB.constants.project_id = <%= @sprint.project_id %>;
   <% if @context == 'taskboard' %>
-  RB.constants.task_states = <%= workflow_transitions(RbTask).to_json.html_safe %>;
+  RB.constants.task_states = <%= workflow_transitions(RbTask, true).to_json.html_safe %>;
   <% end %>
 <% end %>
 

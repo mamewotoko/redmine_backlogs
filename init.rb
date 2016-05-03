@@ -103,7 +103,7 @@ Redmine::Plugin.register :redmine_backlogs do
 
     permission :view_taskboards,      {
                                         :rb_taskboards       => [:current, :show],
-										:rb_kanban       => [:current, :show],
+                                        :rb_kanban           => [:current, :show],
                                         :rb_sprints          => :show,
                                         :rb_stories          => [:index, :show, :tooltip],
                                         :rb_tasks            => [:index, :show],
@@ -152,7 +152,7 @@ Redmine::Plugin.register :redmine_backlogs do
 
   menu :project_menu, :rb_master_backlogs, { :controller => :rb_master_backlogs, :action => :show }, :caption => :label_backlogs, :after => :roadmap, :param => :project_id, :if => Proc.new { Backlogs.configured? }
   menu :project_menu, :rb_taskboards, { :controller => :rb_taskboards, :action => :current }, :caption => :label_task_board, :after => :rb_master_backlogs, :param => :project_id, :if => Proc.new {|project| Backlogs.configured? && project && project.active_sprint }
-  menu :project_menu, :rb_kanban, { :controller => :rb_kanban, :action => :current }, :caption => :label_kanban, :after => :rb_taskboards, :param => :project_id, :if => Proc.new {|project| Backlogs.configured? && project && Setting.respond_to?(:plugin_redmine_project_issue_statuses) && RbStory.product_backlog(project).size > 0}
+  menu :project_menu, :rb_kanban, { :controller => :rb_kanban, :action => :current }, :caption => :label_kanban, :after => :rb_taskboards, :param => :project_id, :if => Proc.new {|project| Backlogs.configured? && project&& project.active_sprint && Setting.respond_to?(:plugin_redmine_project_issue_statuses)}
   menu :project_menu, :rb_releases, { :controller => :rb_releases, :action => :index }, :caption => :label_release_plural, :after => :rb_kanban, :param => :project_id, :if => Proc.new { Backlogs.configured? }
 
   menu :top_menu, :rb_statistics, { :controller => :rb_all_projects, :action => :statistics}, :caption => :label_scrum_statistics,

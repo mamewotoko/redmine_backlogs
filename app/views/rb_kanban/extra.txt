@@ -1,0 +1,8 @@
+<!-- <% status = IssueStatus.find(1) #TODO: Fix this (New column, parent task validation) %>
+    <% #(issues.where(status_id: 1).where(tracker_id: RbTask.tracker) - @sprint.impediments).each do |issue| %>
+      <tr id="swimlane-kanbanIssue<%= issue.id %>" class="story-swimlane">
+        <td class="swimlane list <%= status.is_closed? ? 'closed' : '' %>" id=">_<%= status.id %>" -rb-status-id="<%= status.id %>" -rb-project-id="<%= @project.id %>>
+          <%= #render_rb_task_collection([issue]) %>
+        <td>
+      </tr>
+    <% #end %> -->

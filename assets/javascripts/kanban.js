@@ -1,8 +1,10 @@
+
+
 /***************************************
-  TASKBOARD
+  KANBAN
 ***************************************/
 
-RB.Taskboard = RB.Object.create({
+RB.Kanban = RB.Object.create({
     
   initialize: function(el){
     var j = RB.$(el);
@@ -22,8 +24,8 @@ RB.Taskboard = RB.Object.create({
     RB.$("#col_width input").bind('keyup', function(e){ if(e.which==13) self.updateColWidths(); });
 
     //initialize mouse handling for drop handling
-    j.bind('mousedown.taskboard', function(e) { return self.onMouseDown(e); });
-    j.bind('mouseup.taskboard', function(e) { return self.onMouseUp(e); });
+    j.bind('mousedown.kanban', function(e) { return self.onMouseDown(e); });
+    j.bind('mouseup.kanban', function(e) { return self.onMouseUp(e); });
 
     // Initialize task lists, restricting drop to the story
     var tasks_lists =j.find('.story-swimlane');
@@ -49,6 +51,13 @@ RB.Taskboard = RB.Object.create({
         connectWith: '.story-swimlane .list'
         }, sortableOpts));
     }
+    
+    //initialize the cells (td) as sortable
+    if (RB.permissions.update_tasks) {
+      j.find('.list').sortable(RB.$.extend({
+        connectWith: '.list'
+        }, sortableOpts));
+    }
 
     // Initialize each task in the board
     j.find('.task').each(function(index){
@@ -58,6 +67,11 @@ RB.Taskboard = RB.Object.create({
     // Add handler for .add_new click
     if (RB.permissions.create_tasks) {
       j.find('#tasks .add_new').bind('click', self.handleAddNewTaskClick);
+    }
+    
+    // Add handler for .add_new click
+    if (RB.permissions.create_tasks) {
+      j.find('#tasksKanban .add_new').bind('click', self.handleAddNewTaskClick);
     }
 
 
@@ -120,8 +134,6 @@ RB.Taskboard = RB.Object.create({
       // allow dragging to same status to prevent weird behavior
       // if one tries drag into another story but same status.
       if (new_status_id == status_id) { return; }
-      
-      
 
       var states = RB.constants.task_states['transitions'][tracker_id][user_status][status_id];
       if (!states) { states = RB.constants.task_states['transitions'][tracker_id][user_status][RB.constants.task_states['transitions'][tracker_id][user_status]['default']]; }
@@ -167,13 +179,13 @@ RB.Taskboard = RB.Object.create({
   handleAddNewImpedimentClick: function(event){
     if (event.button > 1) return;
     var row = RB.$(this).parents("tr").first();
-    RB.$('#taskboard').data('this').newImpediment(row);
+    RB.$('#kanban').data('this').newImpediment(row);
   },
   
   handleAddNewTaskClick: function(event){
     if (event.button > 1) return;
     var row = RB.$(this).parents("tr").first();
-    RB.$('#taskboard').data('this').newTask(row);
+    RB.$('#kanban').data('this').newTask(row);
   },
 
   loadColWidthPreference: function(){
@@ -287,4 +299,6 @@ RB.UserFilter = RB.Object.create({
     });
    }
 });
+
+
 

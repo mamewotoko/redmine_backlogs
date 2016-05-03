@@ -1,5 +1,4 @@
-<% if(Setting.respond_to? :plugin_redmine_project_issue_statuses) %>
-<!-- KANBAN VIEW -->
+<!-- TASKBOARD VIEW -->
 <%# early javascript before common.hs %>
 <%- controller.rb_jquery_plugins = capture do %>
   <%= javascript_include_tag(
@@ -17,12 +16,11 @@
   <%= stylesheet_link_tag 'taskboard.css', :plugin => 'redmine_backlogs', :media => 'print,screen' %>
   <%= stylesheet_link_tag 'taskboard_print.css', :plugin => 'redmine_backlogs', :media => 'print' %>
 
-	<script type="text/javascript"
-		  src="<%= url_for(:controller => 'rb_server_variables',
-						   :action => 'project',
-						   :context => 'taskboard',
-						   :format => 'js') %>">
-  
+  <script type="text/javascript"
+          src="<%= url_for(:controller => 'rb_server_variables',
+                           :action => 'sprint', :sprint_id => @sprint.id,
+                           :context => 'taskboard',
+                           :format => 'js') %>">
   </script>
   <%# Usability: display default cursor if tasks cannot be dragged %>
   <% unless User.current.allowed_to?(:update_tasks, @project) %>
@@ -37,7 +35,7 @@
     <%= link_to l(:label_master_backlog), :controller => "rb_master_backlogs", :action => "show", :project_id => @project %>
     <%= breadcrumb_separator %>
   <% end %>
-  <%= h l(:label_product_backlog) %>
+  <%= h @sprint.name %>
 <% end %>
 
 <%- content_for :view_specific_users do %>
@@ -58,8 +56,13 @@
 <br style="clear:both" />
 </span>
 <%- end %>
-<span id="sprintestimatedhours"></span>
+
 <%- content_for :view_specific_links do %>
+
+  <span id="sprintestimatedhours">(<%= @sprint.estimated_hours.to_f %> estimated <%= l(:label_hours) %>)</span>
+  <% if @sprint.has_burndown? %>
+    <a id='show_charts'><%= l(:label_burndown) %></a>
+  <% end %>
   <span id="col_width"><%= l(:label_column_width) %>: <input name="col_width"/></span>
   <a id="disable_autorefresh">Disable Auto-refresh</a>
   <a id="refresh">Refresh</a>
@@ -72,7 +75,7 @@
 
   <table id="board_header" cellspacing="0">
     <tr>
-      <td><%= l(:backlogs_new) %></td>
+      <td><%= l(:backlogs_story) %></td>
       <%- @statuses.each do |status| %>
 	  <% if(Setting.respond_to? :plugin_redmine_project_issue_statuses) %>
 	  <% if Setting.plugin_redmine_project_issue_statuses == nil || Setting.plugin_redmine_project_issue_statuses == ""
@@ -84,9 +87,10 @@
 		if Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'].has_key?(status.id)
 			if(Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'][status.id] == @project.id)
 			%>
-				<td class="swimlane"><%= h status.name %></td>
+				
 		<%	end
-		%>
+		else %>
+			<td class="swimlane"><%= h status.name %></td>
 		<% end
 		%>
 	  <% else %>
@@ -98,12 +102,44 @@
 
   <table id="impediments" class="board" cellspacing="0">
     <tr>
-      
+      <td><div class="label_sprint_impediments">
+            <% if User.current.allowed_to?(:create_impediments, @project) %>
+            <span class="add_new">
+              <%= image_tag("add.png", :alt => "+") %>
+            </span>
+            <% end %>
+            <%= l(:label_sprint_impediments) %>
+      </div></td>
+      <%- @statuses.each do |status| %>
+	  <% if(Setting.respond_to? :plugin_redmine_project_issue_statuses) %>
+	  <% if Setting.plugin_redmine_project_issue_statuses == nil || Setting.plugin_redmine_project_issue_statuses == ""
+		  Setting.plugin_redmine_project_issue_statuses = {'issueStatusToProject' => {}}
+		end 
+		if Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'] == nil || Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'] == ""
+		  Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'] = {}
+		end 
+		if Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'].has_key?(status.id)
+			if(Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'][status.id] == @project.id)
+			%>
+				
+		<%	end
+		else %>
+			<td class="swimlane list <%= status.is_closed? ? 'closed' : '' %>" id="impcell_<%= status.id %>" -rb-status-id="<%= status.id %>" -rb-project-id="impediments">
+				<%= render :partial => "rb_impediments/impediment", :collection => @sprint.impediments.select{|impediment| impediment.status_id==status.id} %>
+			</td>
+		<% end
+		%>
+	  <% else %>
+		<td class="swimlane list <%= status.is_closed? ? 'closed' : '' %>" id="impcell_<%= status.id %>" -rb-status-id="<%= status.id %>" -rb-project-id="impediments">
+				<%= render :partial => "rb_impediments/impediment", :collection => @sprint.impediments.select{|impediment| impediment.status_id==status.id} %>
+			</td>
+	  <% end %>
+      <%- end %>
     </tr>
   </table>
 
   <table id="tasks" class="board" cellspacing="0">
-    <%- RbStory.product_backlog(@project).each do |story| %>
+    <%- @sprint.stories.each do |story| %>
     <tr id="swimlane-<%= story.id %>" class="story-swimlane">
       <td>
         <div class="story <%= mark_if_closed(story) %>" <%= build_inline_style(story).html_safe %>>
@@ -142,12 +178,12 @@
 		if Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'].has_key?(status.id)
 			if(Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'][status.id] == @project.id)
 			%>
-				<td class="swimlane list <%= status.is_closed? ? 'closed' : '' %>" id="<%= story.id %>_<%= status.id %>" -rb-status-id="<%= status.id %>" -rb-project-id="<%= story.project.id %>">
-					<%= render_rb_task_collection(story.descendants.select{|task| task.status_id==status.id}) %>
-				  </td>
+				
 		<%	end
-		%>
-		
+		else %>
+			<td class="swimlane list <%= status.is_closed? ? 'closed' : '' %>" id="<%= story.id %>_<%= status.id %>" -rb-status-id="<%= status.id %>" -rb-project-id="<%= story.project.id %>">
+				<%= render_rb_task_collection(story.descendants.select{|task| task.status_id==status.id}) %>
+			  </td>
 		<% end
 		%>
 	   <% else %>
@@ -158,6 +194,135 @@
       <%- end %>
     </tr>
     <%- end %>
+  </table>
+</div>
+<%- end %>
+
+<%- content_for :helpers do %>
+  <select class="time_entry_user_id template" id="time_entry_user_id_options">
+    <%- users_allowed_to_log_on_task.each do |u| %>
+      <option value="<%= u[1] %>"><%= u[0] %></option>
+    <%- end %>
+  </select>
+
+  <select class="priority_id template" id="priority_id_options">
+    <%- IssuePriority.all.each do |p| %>
+    <option value="<%= p.id %>"><%= h p.name %></option>
+    <%- end %>
+  </select>
+
+  <select class="assigned_to_id template" id="assigned_to_id_options">
+    <option value="" color="#AAAAAA" color_light="#E0E0E0"> </option>
+    <%= users_assignable_options_for_select(@project.assignable_users) %>
+  </select>
+  <div id="task_template">
+    <%= render :partial => "rb_tasks/task", :object => RbTask.new %>
+  </div>
+  <div id="impediment_template">
+    <%= render :partial => "rb_impediments/impediment", :object => RbTask.new %>
+  </div>
+  <!-- end of templates -->
+  <div id="issue_editor"> </div>
+  <div class="meta" id="last_updated"><%= date_string_with_milliseconds( (@last_updated.blank? ? Time.now : @last_updated.updated_on) )  %></div>
+  <div id="charts"> </div>
+  <div id="preloader">
+    <div id="spinner"> </div>
+    <div id="warning"> </div>
+  </div>
+<%- end %>
+
+<% if(Setting.respond_to? :plugin_redmine_project_issue_statuses) %>
+<!-- KANBAN VIEW -->
+<% content_for :head_tags do %>
+  <%= javascript_include_tag(
+    'show_main_kanban', 'kanban_updater', 'kanban',
+     :plugin => 'redmine_backlogs')
+  %>
+  <%= stylesheet_link_tag 'kanban.css', :plugin => 'redmine_backlogs', :media => 'print,screen' %>
+  
+  </script>
+  <%# Usability: display default cursor if tasks cannot be dragged %>
+  <% unless User.current.allowed_to?(:update_tasks, @project) %>
+    <style type="text/css">
+    #kanban .issue{cursor:default;}
+    </style>
+  <% end %>
+<% end %>
+
+<%- content_for :main do %>
+<span id="userid" style="visibility:hidden;"><%= User.current.id %></span>
+<div id="kanban">
+
+
+  <table id="board_header" cellspacing="0">
+    <tr>
+      <td><%= l(:backlogs_backlog) %></td>
+      <%- @statuses.each do |status| %>
+	  <% if(Setting.respond_to? :plugin_redmine_project_issue_statuses) %>
+	  <% if Setting.plugin_redmine_project_issue_statuses == nil || Setting.plugin_redmine_project_issue_statuses == ""
+		  Setting.plugin_redmine_project_issue_statuses = {'issueStatusToProject' => {}}
+		end 
+		if Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'] == nil || Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'] == ""
+		  Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'] = {}
+		end 
+		if Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'].has_key?(status.id)
+			if(Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'][status.id] == @project.id)
+			%>
+				<td class="swimlane"><%= h status.name %></td>
+		<%	end
+		%>
+		<% end
+		%>
+	  <% else %>
+		<td class="swimlane"><%= h status.name %></td>
+	  <% end %>
+      <%- end %>
+    </tr>
+  </table>
+
+  <table id="impediments" class="board" cellspacing="0">
+    <tr>
+      
+    </tr>
+  </table>
+
+  <table id="tasks" class="board" cellspacing="0">
+    <% issues = Issue.where(project_id: @project.id) %>
+    <tr id="swimlane-kanban" class="story-swimlane">
+          <td><div class="label_sprint_impediments">
+            <% if User.current.allowed_to?(:create_tasks, @project) %>
+            <span class="add_new">
+              <%= image_tag("add.png", :alt => "+") %>
+            </span>
+            <% end %>
+            <%= "New" %>
+      </div></td>
+      <%- @statuses.each do |status| %>
+        <% if(Setting.respond_to? :plugin_redmine_project_issue_statuses) %>
+          <% if Setting.plugin_redmine_project_issue_statuses == nil || Setting.plugin_redmine_project_issue_statuses == ""
+            Setting.plugin_redmine_project_issue_statuses = {'issueStatusToProject' => {}}
+          end 
+          if Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'] == nil || Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'] == ""
+            Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'] = {}
+          end 
+          if Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'].has_key?(status.id)
+            if(Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'][status.id] == @project.id)
+            %>
+              <td class="swimlane list <%= status.is_closed? ? 'closed' : '' %>" id="_<%= status.id %>" -rb-status-id="<%= status.id %>" -rb-project-id="<%= @project.id %>">
+                <%= render_rb_task_collection(issues.select{|task| !task.parent_id && task.status_id==status.id}) %>
+              </td>
+            <%end
+            %>
+          <% end
+          %>
+        <% else %>
+          <td class="swimlane list <%= status.is_closed? ? 'closed' : '' %>" id=">_<%= status.id %>" -rb-status-id="<%= status.id %>" -rb-project-id="<%= @project.id %>">
+              <%= render_rb_task_collection(issues.select{|task| !task.parent_id && task.status_id==status.id}) %>
+          </td>
+        <% end %>
+      <% end %>
+    </tr>
+    
   </table>
 </div>
 <%- end %>
