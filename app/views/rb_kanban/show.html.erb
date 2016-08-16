@@ -1,3 +1,4 @@
+<!-- Expansion code by PSL, edited by Summer -->
 <!-- TASKBOARD VIEW -->
 <%# early javascript before common.hs %>
 <%- controller.rb_jquery_plugins = capture do %>
@@ -22,6 +23,34 @@
                            :context => 'taskboard',
                            :format => 'js') %>">
   </script>
+  
+  <style>
+	tr.header
+	{
+		cursor:pointer;
+	}
+	.header .sign:after{
+	  content:"+";
+	  display:inline-block;      
+	}
+	.header.expand .sign:after{
+	  content:"-";
+	 }
+   </style>
+
+	<script type="text/javascript">
+	$(document).ready(function(){
+	$('#taskHeader').click(function(){
+		 $(this).toggleClass('expand').nextUntil('tr.header').slideToggle(100);
+		 $("#taskboard").slideToggle(100);
+	});
+	$('#kanbanHeader').click(function(){
+		 $(this).toggleClass('expand').nextUntil('tr.header').slideToggle(100);
+		 $("#kanban").slideToggle(100);
+	});
+	});
+   </script>
+  
   <%# Usability: display default cursor if tasks cannot be dragged %>
   <% unless User.current.allowed_to?(:update_tasks, @project) %>
     <style type="text/css">
@@ -70,10 +99,16 @@
 
 <%- content_for :main do %>
 <span id="userid" style="visibility:hidden;"><%= User.current.id %></span>
+<table>
+<tr  class="header expand" id="taskHeader">
+  <th>Task Board <span class="sign"></span></th>
+</tr>
+</table>
 <div id="taskboard">
 
-
+	
   <table id="board_header" cellspacing="0">
+	
     <tr>
       <td><%= l(:backlogs_story) %></td>
       <%- @statuses.each do |status| %>
@@ -251,10 +286,16 @@
 
 <%- content_for :main do %>
 <span id="userid" style="visibility:hidden;"><%= User.current.id %></span>
+<table>
+<tr  class="header expand" id="kanbanHeader">
+  <th>Kanban Board <span class="sign"></span></th>
+</tr>
+</table>
 <div id="kanban">
 
 
   <table id="board_header" cellspacing="0">
+
     <tr>
       <td><%= l(:backlogs_backlog) %></td>
       <%- @statuses.each do |status| %>
