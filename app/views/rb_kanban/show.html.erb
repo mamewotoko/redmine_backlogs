@@ -28,6 +28,8 @@
 	tr.header
 	{
 		cursor:pointer;
+		outline: dotted;
+		word-wrap: break-word;
 	}
 	.header .sign:after{
 	  content:"+";
@@ -99,12 +101,12 @@
 
 <%- content_for :main do %>
 <span id="userid" style="visibility:hidden;"><%= User.current.id %></span>
-<table>
+<table style = "width:100%; table-layout:fixed;">
 <tr  class="header expand" id="taskHeader">
   <th>Task Board <span class="sign"></span></th>
 </tr>
 </table>
-<div id="taskboard">
+<div id="taskboard" style = "overflow-x:scroll;">
 
 	
   <table id="board_header" cellspacing="0">
@@ -286,13 +288,14 @@
 
 <%- content_for :main do %>
 <span id="userid" style="visibility:hidden;"><%= User.current.id %></span>
-<table>
+
+<table style = "width:100%; table-layout:fixed;">
 <tr  class="header expand" id="kanbanHeader">
   <th>Kanban Board <span class="sign"></span></th>
 </tr>
 </table>
-<div id="kanban">
 
+<div id="kanban" style = "overflow-x:scroll;">
 
   <table id="board_header" cellspacing="0">
 
