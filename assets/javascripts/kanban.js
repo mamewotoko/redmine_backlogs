@@ -151,7 +151,10 @@ RB.Kanban = RB.Object.create({
   
   dragComplete: function(event, ui) {
     if (!ui.sender) { // Handler is triggered for source and target. Thus the need to check.
-      ui.item.data('this').saveDragResult();
+      if(typeof ui.item.data('this') !== 'undefined' && ui.item.data('this') != null)
+	  {
+		ui.item.data('this').saveDragResult();
+	  }
     }    
   },
 

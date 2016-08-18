@@ -71,7 +71,7 @@ RB.Task = RB.Object.create(RB.Issue, {
     var data = j.find('.editor').serialize() +
                "&parent_issue_id=" + cellID[0] +
                "&status_id=" + cellID[1] +
-               "&next=" + (nxt.length==1 ? nxt.data('this').getID() : '') +
+               "&next=" + (nxt.length==1 && typeof nxt.data('this') !== 'undefined' && nxt.data('this') != null ? nxt.data('this').getID() : '') +
                (this.isNew() ? "" : "&id=" + j.children('.id').text());
 
     if( project.length){

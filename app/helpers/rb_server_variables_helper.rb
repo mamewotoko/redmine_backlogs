@@ -43,7 +43,7 @@ module RbServerVariablesHelper
             end 
             allowed = []
             allowed_statues.each do |s|
-              if Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'].has_key?(s.id)
+              if s.name == "Backlog" || Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'].has_key?(s.id)
                 #Do nothing for now.
               else
                 allowed.push(s.id.to_s)

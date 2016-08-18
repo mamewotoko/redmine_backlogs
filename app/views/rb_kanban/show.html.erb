@@ -1,3 +1,6 @@
+<% if !IssueStatus.exists?(name: 'Backlog')
+	IssueStatus.create(name: 'Backlog')
+end %>
 <!-- Expansion code by PSL, edited by Summer -->
 <!-- TASKBOARD VIEW -->
 <%# early javascript before common.hs %>
@@ -28,8 +31,9 @@
 	tr.header
 	{
 		cursor:pointer;
-		outline: dotted;
+		outline: solid;
 		word-wrap: break-word;
+		background-color: #FFA500;
 	}
 	.header .sign:after{
 	  content:"+";
@@ -121,8 +125,8 @@
 		if Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'] == nil || Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'] == ""
 		  Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'] = {}
 		end 
-		if Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'].has_key?(status.id)
-			if(Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'][status.id] == @project.id)
+		if (status.name == "Backlog" || Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'].has_key?(status.id))
+			if(status.name != "Backlog" && Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'][status.id] == @project.id)
 			%>
 				
 		<%	end
@@ -155,8 +159,8 @@
 		if Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'] == nil || Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'] == ""
 		  Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'] = {}
 		end 
-		if Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'].has_key?(status.id)
-			if(Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'][status.id] == @project.id)
+		if (status.name == "Backlog" || Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'].has_key?(status.id))
+			if(status.name != "Backlog" && Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'][status.id] == @project.id)
 			%>
 				
 		<%	end
@@ -212,8 +216,8 @@
 		if Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'] == nil || Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'] == ""
 		  Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'] = {}
 		end 
-		if Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'].has_key?(status.id)
-			if(Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'][status.id] == @project.id)
+		if (status.name == "Backlog" || Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'].has_key?(status.id))
+			if(status.name != "Backlog" && Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'][status.id] == @project.id)
 			%>
 				
 		<%	end
@@ -300,7 +304,7 @@
   <table id="board_header" cellspacing="0">
 
     <tr>
-      <td><%= l(:backlogs_backlog) %></td>
+      <td class="swimlane"><%= l(:backlogs_backlog) %></td>
       <%- @statuses.each do |status| %>
 	  <% if(Setting.respond_to? :plugin_redmine_project_issue_statuses) %>
 	  <% if Setting.plugin_redmine_project_issue_statuses == nil || Setting.plugin_redmine_project_issue_statuses == ""
@@ -309,19 +313,22 @@
 		if Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'] == nil || Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'] == ""
 		  Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'] = {}
 		end 
-		if Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'].has_key?(status.id)
-			if(Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'][status.id] == @project.id)
+		if (status.name == "Backlog" || Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'].has_key?(status.id))
+			if(status.name != "Backlog" && Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'][status.id] == @project.id)
 			%>
 				<td class="swimlane"><%= h status.name %></td>
 		<%	end
 		%>
 		<% end
 		%>
+	  
 	  <% else %>
 		<td class="swimlane"><%= h status.name %></td>
 	  <% end %>
       <%- end %>
     </tr>
+	
+	
   </table>
 
   <table id="impediments" class="board" cellspacing="0">
@@ -333,14 +340,21 @@
   <table id="tasks" class="board" cellspacing="0">
     <% issues = Issue.where(project_id: @project.id) %>
     <tr id="swimlane-kanban" class="story-swimlane">
-          <td><div class="label_sprint_impediments">
-            <% if User.current.allowed_to?(:create_tasks, @project) %>
-            <span class="add_new">
-              <%= image_tag("add.png", :alt => "+") %>
-            </span>
-            <% end %>
-            <%= "New" %>
-      </div></td>
+	  
+	  <% if(Setting.respond_to? :plugin_redmine_project_issue_statuses) %>
+		<% status = IssueStatus.find_by name: 'Backlog' %>
+		      <td class="swimlane list <%= status.is_closed? ? 'closed' : '' %>" id="_<%= status.id %>" -rb-status-id="<%= status.id %>" -rb-project-id="<%= @project.id %>">
+				<div class="label_sprint_impediments">
+					<% if User.current.allowed_to?(:create_tasks, @project) %>
+					<span class="add_new">
+					  <%= image_tag("add.png", :alt => "+") %>
+					</span>
+					<% end %>
+					<%= "New" %>	
+				</div>
+				<%= render_rb_task_collection(issues.select{|task| !task.parent_id && task.status_id==status.id}) %>
+              </td>
+	  <% end %>
       <%- @statuses.each do |status| %>
         <% if(Setting.respond_to? :plugin_redmine_project_issue_statuses) %>
           <% if Setting.plugin_redmine_project_issue_statuses == nil || Setting.plugin_redmine_project_issue_statuses == ""
@@ -349,8 +363,8 @@
           if Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'] == nil || Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'] == ""
             Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'] = {}
           end 
-          if Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'].has_key?(status.id)
-            if(Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'][status.id] == @project.id)
+          if (status.name == "Backlog" || Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'].has_key?(status.id))
+            if(status.name != "Backlog" && Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'][status.id] == @project.id)
             %>
               <td class="swimlane list <%= status.is_closed? ? 'closed' : '' %>" id="_<%= status.id %>" -rb-status-id="<%= status.id %>" -rb-project-id="<%= @project.id %>">
                 <%= render_rb_task_collection(issues.select{|task| !task.parent_id && task.status_id==status.id}) %>
