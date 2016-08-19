@@ -53,8 +53,11 @@ end %>
 		{
 			var numStr = prevPagesOrder[i];
 			var numStr2 = prevPagesOrder[i-1];
-			$(".swimhead."+numStr).insertAfter($(".swimhead."+numStr2));
-			$(".list."+numStr).insertAfter($(".list."+numStr2));
+			if($(".swimhead."+numStr).length && $(".list."+numStr).length && $(".swimhead."+numStr2).length && $(".list."+numStr2).length)
+			{
+				$(".swimhead."+numStr).insertAfter($(".swimhead."+numStr2));
+				$(".list."+numStr).insertAfter($(".list."+numStr2));
+			}
 		}
 	}
 	$('#taskHeader').click(function(){
