@@ -78,7 +78,7 @@ end %>
 		{ 
 			var currentOrder = $(this).sortable('toArray');
             var first = ui.item[0].id;
-            var second = currentOrder[prevPagesOrder.indexOf(first)];
+            var second = prevPagesOrder[currentOrder.indexOf(first)];
 			var numStr = first;
 			var numStr2 = second;
 			if(first != null && second != null && first != "" && second != "" && first != second)
