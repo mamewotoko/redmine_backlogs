@@ -2,6 +2,8 @@ require 'date'
 
 class RbSprint < Version
   unloadable
+  
+  serialize :orderArray, Array
 
   validate :start_and_end_dates
 

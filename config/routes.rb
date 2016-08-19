@@ -153,6 +153,10 @@ else
             :to => 'rb_kanban#show', :via => [:get]
   rb_match rb, 'projects/:project_id/kanban',
             :to => 'rb_kanban#current', :via => [:get]
+			
+  rb_match rb, 'kanban/:sprint_id/order',
+            :to => 'rb_kanban#order', :via => [:post]
+
   end
 end
 

@@ -1,7 +1,16 @@
 include RbCommonHelper
+require 'json'
 
 class RbKanbanController < RbApplicationController
   unloadable
+  
+  before_filter :authorize, :except=>[:order]
+  
+  def order
+	@sprint.orderArray = JSON.parse(params[:orderArray])
+	@sprint.save!
+	render :nothing => true
+  end
 
   def show
     stories = @sprint.stories

@@ -45,8 +45,18 @@ end %>
    </style>
 
 	<script type="text/javascript">
-	var prevPagesOrder = [];
+	var prevPagesOrder = JSON.parse("<%= !@sprint.orderArray.blank? ? escape_javascript(@sprint.orderArray.to_json.html_safe) : "[]" %>");
 	$(document).ready(function(){
+	if(prevPagesOrder.length > 1)
+	{
+		for (var i = 1; i < prevPagesOrder.length; i++) 
+		{
+			var numStr = prevPagesOrder[i];
+			var numStr2 = prevPagesOrder[i-1];
+			$(".swimhead."+numStr).insertAfter($(".swimhead."+numStr2));
+			$(".list."+numStr).insertAfter($(".list."+numStr2));
+		}
+	}
 	$('#taskHeader').click(function(){
 		 $(this).toggleClass('expand').nextUntil('tr.header').slideToggle(100);
 		 $("#taskboard").slideToggle(100);
@@ -84,6 +94,12 @@ end %>
 				numStr2 = prevPagesOrder[prevPagesOrder.length-1];
 				$(".list."+numStr).insertAfter($(".list."+numStr2));
 			}
+			$.ajax({
+			  type: "POST",
+			  url: "<%= @sprint.id %>/order/",
+			  data: { orderArray: JSON.stringify(currentOrder) },
+			  //success: function() { alert("Success!"); }
+			});
 		}
 	} );
 	});
