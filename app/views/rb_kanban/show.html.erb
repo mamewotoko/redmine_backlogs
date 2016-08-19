@@ -52,11 +52,21 @@ end %>
 		for (var i = 1; i < prevPagesOrder.length; i++) 
 		{
 			var numStr = prevPagesOrder[i];
-			var numStr2 = prevPagesOrder[i-1];
-			if($(".swimhead."+numStr).length && $(".list."+numStr).length && $(".swimhead."+numStr2).length && $(".list."+numStr2).length)
+			if($(".swimhead."+numStr).length && $(".list."+numStr).length)
 			{
-				$(".swimhead."+numStr).insertAfter($(".swimhead."+numStr2));
-				$(".list."+numStr).insertAfter($(".list."+numStr2));
+				var j = i-1;
+				var numStr2 = prevPagesOrder[j];
+				
+				while(!($(".swimhead."+numStr2).length && $(".list."+numStr2).length) && j > 0)
+				{
+					j--; 
+					numStr2 = prevPagesOrder[j];
+				}
+				if($(".swimhead."+numStr2).length && $(".list."+numStr2).length)
+				{
+					$(".swimhead."+numStr).insertAfter($(".swimhead."+numStr2));
+					$(".list."+numStr).insertAfter($(".list."+numStr2));
+				}
 			}
 		}
 	}
