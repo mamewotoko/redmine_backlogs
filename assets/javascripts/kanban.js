@@ -40,7 +40,8 @@ RB.Kanban = RB.Object.create({
       helper: 'clone', //workaround firefox15+ bug where drag-stop triggers click
       start: self.dragStart,
       stop: function(e, ui) {return self.dragStop(e, ui);},
-      update: self.dragComplete
+      update: self.dragComplete,
+	  cancel: '.label_kanban_new'
       //revert: true, //this interferes with capybara test timings. This braindead stupid jquery-ui issues dragStop after all animations are finished, no way to save the drag result while animation is in progress.
       //scroll: true
     };
@@ -96,7 +97,7 @@ RB.Kanban = RB.Object.create({
   onMouseUp: function(e) {
       //re-enable all cells deferred
       setTimeout(function(){
-        RB.$(':ui-sortable').sortable('enable');
+        RB.$(':ui-sortable').sortable('enable', 'cancel', '.label_kanban_new');
       }, 10);
   },
   /**
@@ -125,7 +126,7 @@ RB.Kanban = RB.Object.create({
       // check for project
       //sharing, restrictive case: only allow same-project story-task relationship
       if (new_project_id != old_project_id && old_story_id != new_story_id) {
-        RB.$(this).sortable('disable');
+        RB.$(this).sortable('disable', 'cancel', '.label_kanban_new');
         return;
       }
 
@@ -139,14 +140,14 @@ RB.Kanban = RB.Object.create({
       if (!states) { states = RB.constants.task_states['transitions'][tracker_id][user_status][RB.constants.task_states['transitions'][tracker_id][user_status]['default']]; }
       if (RB.$.inArray(String(new_status_id), states) < 0) {
         //workflow does not allow this user to put the issue into this new state.
-        RB.$(this).sortable('disable');
+        RB.$(this).sortable('disable', 'cancel', '.label_kanban_new');
         return;
       }
 
     }); //each
 
     el = RB.$(e.target).parents('.list'); // .task or .impediment
-    if (el && el.length) el.sortable('refresh');
+    if (el && el.length) el.sortable('refresh', 'cancel', '.label_kanban_new');
   },
   
   dragComplete: function(event, ui) {
@@ -222,6 +223,7 @@ RB.Kanban = RB.Object.create({
     RB.$("#col_width input").val(w);
     RB.UserPreferences.set('taskboardColWidth', w);
     RB.$(".swimlane").width(this.colWidthUnit * w).css('min-width', this.colWidthUnit * w);
+	RB.$(".label_kanban_new").width(this.colWidthUnit * w).css('width', this.colWidthUnit * w - 20);
   }
 });
 

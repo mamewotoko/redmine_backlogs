@@ -118,6 +118,24 @@ See RB.Kanban.initialize()
   position:relative;
   width:190px;
 }
+.label_kanban_new{
+  -moz-box-shadow: 2px 2px 2px #CCCCCC;
+  -webkit-box-shadow: 2px 2px 2px #CCCCCC;;
+  box-shadow: 2px 2px 2px #CCCCCC;;
+  background: -webkit-gradient(linear, left top, left bottom, from(#FEE), to(#FD2));
+  background: -moz-linear-gradient(top, #FEE, #FD2);
+  filter:progid:DXImageTransform.Microsoft.Gradient(Enabled=1,GradientType=0,StartColorStr=#FFEEEE,EndColorStr=#FFDD22);
+  background-color:#F8F6A5;
+  border:none;
+  display:block;
+  float:left;
+  font-size:10px;
+  min-height:15px;
+  margin:5px;
+  padding:5px;
+  position:relative;
+  width:190px;
+}
 .story .id{
   -moz-border-radius:4px 4px 4px 4px;
   -webkit-border-radius:4px 4px 4px 4px;

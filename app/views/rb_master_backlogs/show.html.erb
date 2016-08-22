@@ -1,4 +1,5 @@
 <!-- MASTER BACKLOG VIEW -->
+<!-- Gray template by Jay1b ())
 <%# early javascript before common.hs %>
 <%- controller.rb_jquery_plugins = capture do %>
   <%= javascript_include_tag(
@@ -16,6 +17,71 @@
                            :project_id => @project.identifier,
                            :context => 'backlogs',
                            :format => 'js') %>">
+  </script>
+  <style>
+	.blurredDefaultText 
+	{
+		color:#888 !important;
+	}
+  </style>
+  <script>
+	function inputFocus(i) 
+	{
+		if ($(i).val() == "As a <type of user>, I want <some goal> so that <some reason>.  A good story follows INVEST: Independent, Negotiable, Valuable, Estimatable, Scoped, Testable.") 
+		{
+			$(i).val("");
+			$(i).removeClass("blurredDefaultText");
+			$(i).css("color", "#000");
+		}
+	}
+	function inputBlur(i) 
+	{
+		if ($(i).val() == "" || $(i).val() == "As a <type of user>, I want <some goal> so that <some reason>.  A good story follows INVEST: Independent, Negotiable, Valuable, Estimatable, Scoped, Testable.") 
+		{
+			$(i).val("As a <type of user>, I want <some goal> so that <some reason>.  A good story follows INVEST: Independent, Negotiable, Valuable, Estimatable, Scoped, Testable.");
+			$(i).addClass("blurredDefaultText");
+			$(i).css("color", "#888");
+		}
+	}
+	function inputStart(i)
+	{
+		if(!$(i).is(":focus"))
+		{
+			if ($(i).val() == "" || $(i).val() == "As a <type of user>, I want <some goal> so that <some reason>.  A good story follows INVEST: Independent, Negotiable, Valuable, Estimatable, Scoped, Testable.")
+			{	
+				$(i).val("As a <type of user>, I want <some goal> so that <some reason>.  A good story follows INVEST: Independent, Negotiable, Valuable, Estimatable, Scoped, Testable.");
+				if(!$(i).hasClass("blurredDefaultText"))
+				{
+					$(i).addClass("blurredDefaultText");
+					$(i).css("color", "#888");
+				}
+			}
+		}
+		if($(i).hasClass("blurredDefaultText"))
+		{
+			if ($(i).val() != "" && $(i).val() != "As a <type of user>, I want <some goal> so that <some reason>.  A good story follows INVEST: Independent, Negotiable, Valuable, Estimatable, Scoped, Testable.") 
+			{
+				$(i).removeClass("blurredDefaultText");
+				$(i).css("color", "#000");
+			}
+		}
+	}
+  setInterval(function () {
+
+    //Set the initial blur (unless its highlighted by default)
+	
+    inputStart($('textarea.subject'));
+	
+    $('textarea.subject').blur(function ()
+	{
+        inputBlur(this);
+    });
+    $('textarea.subject').focus(function ()
+	{
+        inputFocus(this);
+    });
+
+}, 100)
   </script>
 
   <%= javascript_include_tag(

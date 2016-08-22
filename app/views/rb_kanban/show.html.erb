@@ -31,7 +31,6 @@ end %>
 	tr.header
 	{
 		cursor:pointer;
-		outline: solid;
 		word-wrap: break-word;
 		background-color: #FFA500;
 	}
@@ -405,7 +404,7 @@ end %>
 	  <% if(Setting.respond_to? :plugin_redmine_project_issue_statuses) %>
 		<% status = IssueStatus.find_by name: 'Backlog' %>
 		      <td class="swimlane list <%= status.is_closed? ? 'closed' : '' %>" id="_<%= status.id %>" -rb-status-id="<%= status.id %>" -rb-project-id="<%= @project.id %>">
-				<div class="label_sprint_impediments">
+				<div class="label_kanban_new"> 
 					<% if User.current.allowed_to?(:create_tasks, @project) %>
 					<span class="add_new">
 					  <%= image_tag("add.png", :alt => "+") %>
