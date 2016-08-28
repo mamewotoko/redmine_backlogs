@@ -27,20 +27,24 @@ end %>
                            :format => 'js') %>">
   </script>
   
+  <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css">
   <style>
 	tr.header
 	{
-		cursor:pointer;
-		word-wrap: break-word;
-		background-color: #FFA500;
+	  white-space: nowrap;
+	  -moz-border-radius:5px 5px 0px 0px;
+	  -webkit-border-radius:5px 5px 0px 0px;
+	  border-radius:5px 5px 0px 0px;
+	  background-color:#CCCCCC;
+	  background: -webkit-gradient(linear, left top, left bottom, from(#EEE), to(#CCC));
+	  background: -moz-linear-gradient(top, #EEE, #CCC);
+	  filter:progid:DXImageTransform.Microsoft.Gradient(Enabled=1,GradientType=0,StartColorStr=#EEEEEE,EndColorStr=#CCCCCC);
+	  position:relative;
+	  white-space: nowrap;
+	  height:30px;
+	  border-bottom: 1px solid #AAAAAA
 	}
-	.header .sign:after{
-	  content:"+";
-	  display:inline-block;      
-	}
-	.header.expand .sign:after{
-	  content:"-";
-	 }
+	
    </style>
 
 	<script type="text/javascript">
@@ -72,10 +76,26 @@ end %>
 	$('#taskHeader').click(function(){
 		 $(this).toggleClass('expand').nextUntil('tr.header').slideToggle(100);
 		 $("#taskboard").slideToggle(100);
+		 if($(this).hasClass('expand'))
+		 {
+			$(".taskHead").html('<span class="sign fa fa-angle-down" id="taskSign"></span> Task Board');
+		 }
+		 else
+		 {
+			$(".taskHead").html('<span class="sign fa fa-angle-right" id="taskSign"></span> Expand to show Task Board...');
+		 }
 	});
 	$('#kanbanHeader').click(function(){
 		 $(this).toggleClass('expand').nextUntil('tr.header').slideToggle(100);
 		 $("#kanban").slideToggle(100);
+		 if($(this).hasClass('expand'))
+		 {
+			$(".kanbanHead").html('<span class="sign fa fa-angle-down" id="kanbanSign"></span> Kanban Board');
+		 }
+		 else
+		 {
+			$(".kanbanHead").html('<span class="sign fa fa-angle-right" id="kanbanSign"></span> Expand to show Kanban Board...');
+		 }
 	});
 	$('.kanbanlane').sortable( 
 	{ 
@@ -167,7 +187,7 @@ end %>
 <span id="userid" style="visibility:hidden;"><%= User.current.id %></span>
 <table style = "width:100%; table-layout:fixed;">
 <tr  class="header expand" id="taskHeader">
-  <th>Task Board <span class="sign"></span></th>
+  <th class="taskHead"><span class="sign fa fa-angle-down" id="taskSign"></span> Task Board</th>
 </tr>
 </table>
 <div id="taskboard" style = "overflow-x:scroll;">
@@ -355,7 +375,7 @@ end %>
 
 <table style = "width:100%; table-layout:fixed;">
 <tr  class="header expand" id="kanbanHeader">
-  <th>Kanban Board <span class="sign"></span></th>
+  <th class="kanbanHead"><span class="sign fa fa-angle-down" id="kanbanSign"></span> Kanban Board</th>
 </tr>
 </table>
 
