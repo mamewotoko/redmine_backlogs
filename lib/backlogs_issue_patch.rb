@@ -24,6 +24,8 @@ module Backlogs
         before_save :backlogs_before_save
         after_save  :backlogs_after_save
 
+        alias_method_chain :new_statuses_allowed_to, :new_statuses_allowed_to_system
+
         include Backlogs::ActiveRecord::Attributes
       end
     end
@@ -32,6 +34,21 @@ module Backlogs
     end
 
     module InstanceMethods
+
+      def new_statuses_allowed_to_with_new_statuses_allowed_to_system(user=User.current, include_default=false)
+        allowed_statuses = new_statuses_allowed_to_without_new_statuses_allowed_to_system(user, include_default)
+        if(Setting.respond_to? :plugin_redmine_project_issue_statuses)
+          if Setting.plugin_redmine_project_issue_statuses == nil || Setting.plugin_redmine_project_issue_statuses == ""
+            Setting.plugin_redmine_project_issue_statuses = {'issueStatusToProject' => {}}
+          end
+          if Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'] == nil || Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'] == ""
+            Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'] = {}
+          end
+          allowed_statuses.delete_if { |status| (status.name == "Backlog" || Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'].has_key?(status.id)) }
+        end
+        return allowed_statuses
+      end
+
       def history
         @history ||= RbIssueHistory.where(:issue_id => self.id).first_or_initialize
       end

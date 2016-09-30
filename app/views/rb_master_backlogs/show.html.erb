@@ -101,6 +101,7 @@
   <%= stylesheet_link_tag 'jquery/jquery.multiselect.css', :plugin => 'redmine_backlogs' %>
   <%= stylesheet_link_tag 'master_backlog.css', :plugin => 'redmine_backlogs', :media => 'print,screen' %>
   <%= stylesheet_link_tag 'master_backlog_print.css', :plugin => 'redmine_backlogs', :media => 'print' %>
+  <%= stylesheet_link_tag 'context_menu.css'%>
   <script type="text/javascript">RB.$(document).ready(function() { RB.$("#livefilter_controll").focus(); });</script>
   <!--[if IE]>
   <script type="text/javascript">
@@ -111,6 +112,238 @@
     });
   </script>
   <![endif]-->
+    <script>
+
+      /**
+       * Function to check if we clicked inside an element with a particular class
+       * name.
+       *
+       * @param {Object} e The event
+       * @param {String} className The class name to check against
+       * @return {Boolean}
+       */
+      function clickInsideElement( e, className )
+      {
+        var el = e.srcElement || e.target;
+
+        if ( el.classList.contains(className) )
+        {
+          return el;
+        }
+        else
+        {
+          while ( el = el.parentNode )
+          {
+            if ( el.classList && el.classList.contains(className) )
+            {
+              return el;
+            }
+          }
+        }
+
+        return false;
+      }
+
+      /**
+       * Get's exact position of event.
+       *
+       * @param {Object} e The event passed in
+       * @return {Object} Returns the x and y position
+       */
+      function getPosition(e)
+      {
+        var posx = 0;
+        var posy = 0;
+
+        if (!e) var e = window.event;
+
+        if (e.pageX || e.pageY)
+        {
+          posx = e.pageX;
+          posy = e.pageY;
+        }
+        else if (e.clientX || e.clientY)
+        {
+          posx = e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft;
+          posy = e.clientY + document.body.scrollTop + document.documentElement.scrollTop;
+        }
+        return {
+          x: posx,
+          y: posy
+        }
+      }
+
+      //var contextMenuClassName = "reverse-x";
+      //var contextMenuItemClassName = "context-menu__item";
+      //var contextMenuLinkClassName = "context-menu__link";
+      var contextMenuActive = "reverse-x";
+
+      var taskItemClassName = "story";
+      var taskItemInContext;
+
+      var clickCoords;
+      var clickCoordsX;
+      var clickCoordsY;
+
+      var menu = $('#context-menu')[0];
+      //var menuItems = menu.querySelectorAll(".context-menu__item");
+      var menuState = 0;
+      var menuWidth;
+      var menuHeight;
+      var menuPosition;
+      var menuPositionX;
+      var menuPositionY;
+
+      var windowWidth;
+      var windowHeight;
+
+      /**
+       * Turns the custom context menu on.
+       */
+      function toggleMenuOn()
+      {
+        $('#context-menu').html($('#context-menu-'+taskItemInContext.id).html());
+        if ( menuState !== 1 )
+        {
+          menuState = 1;
+          $('#context-menu').css('display', 'block');
+        }
+      }
+
+      /**
+       * Turns the custom context menu off.
+       */
+      function toggleMenuOff()
+      {
+        if ( menuState !== 0 )
+        {
+          menuState = 0;
+          $('#context-menu').css('display', 'none');
+        }
+      }
+
+      /**
+       * Positions the menu properly.
+       *
+       * @param {Object} e The event
+       */
+      function positionMenu(e)
+      {
+        clickCoords = getPosition(e);
+        clickCoordsX = clickCoords.x;
+        clickCoordsY = clickCoords.y;
+
+        menuWidth = menu.offsetWidth + 4;
+        menuHeight = menu.offsetHeight + 4;
+
+        windowWidth = window.innerWidth;
+        windowHeight = window.innerHeight;
+
+        if ( (windowWidth - clickCoordsX) < menuWidth )
+        {
+          $('#context-menu').css('left', windowWidth - menuWidth + "px");
+        }
+        else
+        {
+          $('#context-menu').css('left', clickCoordsX + "px");
+        }
+
+        if ( (windowHeight - clickCoordsY) < menuHeight )
+        {
+          $('#context-menu').css('top', windowHeight - menuHeight + "px");
+        }
+        else
+        {
+          $('#context-menu').css('top', clickCoordsY + "px");
+        }
+      }
+
+      /**
+       * Dummy action function that logs an action when a menu item link is clicked
+       *
+       */
+      /**
+       * Dummy action function that logs an action when a menu item link is clicked
+       *
+       * @param {HTMLElement} link The link that was clicked
+       */
+      function menuItemListener( link )
+      {
+        console.log( "Task ID - " + taskItemInContext.getAttribute("id") + ", Task action - ");// + link.getAttribute("data-action"));
+        toggleMenuOff();
+      }
+
+      $( document ).ready(function()
+      {
+        menu = $('#context-menu')[0];
+        /**
+         * Listens for keyup events.
+         */
+          window.onkeyup = function(e)
+          {
+            if ( e.keyCode === 27 )
+            {
+              toggleMenuOff();
+            }
+          }
+
+        /**
+         * Window resize event listener
+         */
+        window.onresize = function(e)
+        {
+          toggleMenuOff();
+        };
+
+        window.onresize = function (e)
+        {
+          toggleMenuOff();
+        };
+
+        /**
+         * Listens for contextmenu events.
+         */
+        document.addEventListener("contextmenu", function (e)
+        {
+          taskItemInContext = clickInsideElement(e, taskItemClassName);
+
+          if (taskItemInContext)
+          {
+            e.preventDefault();
+            toggleMenuOn();
+            positionMenu(e);
+          }
+          else
+          {
+            //console.log(e);
+            taskItemInContext = null;
+            toggleMenuOff();
+          }
+        });
+
+        /**
+         * Listens for click events.
+         */
+        document.addEventListener("click", function (e) {
+         // var clickeElIsLink = clickInsideElement(e, contextMenuLinkClassName);
+
+          /*if (clickeElIsLink)
+          {
+            e.preventDefault();
+            menuItemListener(clickeElIsLink);
+          }*/
+          //else
+          //{
+            var button = e.which || e.button;
+            if (button === 1)
+            {
+              toggleMenuOff();
+            }
+         // }
+        });
+      });
+
+    </script>
   <style type="text/css">
     <% unless User.current.allowed_to?(:update_stories, @project) %>
       #backlogs_container .stories .story{cursor:default;}
@@ -138,7 +371,8 @@
   <a id="multiline">Multiline</a>
 <%- end %>
 
-<%- content_for :main do %>
+<%- # noinspection RailsChecklist02
+    content_for :main do %>
   <div id="backlogs_container">
   <div class="backlogs-panel-wrapper">
     <div class="backlogs-panel left-col">
@@ -157,7 +391,208 @@
     </div>
   </div>
   </div>
+    <%  stories = @product_backlog[:stories].to_a
+        @sprint_backlogs.each do |item|
+          stories.concat(item[:stories].to_a)
+        end
+    %>
+    <div id="context-menu" class="reverse-x" style="left:0;top:0;display: none;">
+    </div>
+    <%
+      stories.each do |story|
+        issues = [story]
+        raise ActiveRecord::RecordNotFound if issues.empty?
+        raise Unauthorized unless issues.all?(&:visible?)
+        projects = [@project]
+        project = @project
+        issue = story
+        issue_ids = issues.map(&:id).sort
 
+        allowed_statuses = issues.map(&:new_statuses_allowed_to).reduce(:&)
+
+        can = {:edit => issues.all?(&:attributes_editable?),
+               :log_time => (project && User.current.allowed_to?(:log_time, project)),
+               :copy => User.current.allowed_to?(:copy_issues, projects) && Issue.allowed_target_projects.any?,
+               :add_watchers => User.current.allowed_to?(:add_issue_watchers, projects),
+               :delete => issues.all?(&:deletable?)
+        }
+
+        assignables = issues.map(&:assignable_users).reduce(:&)
+        trackers = projects.map {|p| Issue.allowed_target_trackers(p) }.reduce(:&)
+        versions = projects.map {|p| p.shared_versions.open}.reduce(:&)
+
+        priorities = IssuePriority.active.reverse
+        back = back_url
+
+        options_by_custom_field = {}
+        if can[:edit]
+          custom_fields = issues.map(&:editable_custom_fields).reduce(:&).reject(&:multiple?)
+          custom_fields.each do |field|
+            values = field.possible_values_options(projects)
+            if values.present?
+              options_by_custom_field[field] = values
+            end
+          end
+        end
+
+        safe_attributes = issues.map(&:safe_attribute_names).reduce(:&)
+
+    %>
+        <div id="context-menu-story_<%=story.id%>" class="reverse-x" style="left:0;top:0;display: none;">
+        <ul>
+        <% if issue -%>
+            <li><%= context_menu_link l(:button_edit), edit_issue_path(issue),
+                                      :class => 'icon-edit', :disabled => !can[:edit] %></li>
+        <% else %>
+            <li><%= context_menu_link l(:button_edit), bulk_edit_issues_path(:ids => issue_ids),
+                                      :class => 'icon-edit', :disabled => !can[:edit] %></li>
+        <% end %>
+
+        <% if allowed_statuses.present? %>
+            <li class="folder">
+              <a href="#" class="submenu"><%= l(:field_status) %></a>
+              <ul>
+                <% allowed_statuses.each do |s| -%>
+                    <li><%= context_menu_link s.name, bulk_update_issues_path(:ids => issue_ids, :issue => {:status_id => s}, :back_url => back), :method => :post,
+                                              :selected => (issue && s == issue.status), :disabled => !can[:edit] %></li>
+                <% end -%>
+              </ul>
+            </li>
+        <% end %>
+
+        <% if trackers.present? %>
+            <li class="folder">
+              <a href="#" class="submenu"><%= l(:field_tracker) %></a>
+              <ul>
+                <% trackers.each do |t| -%>
+                    <li><%= context_menu_link t.name, bulk_update_issues_path(:ids => issue_ids, :issue => {'tracker_id' => t}, :back_url => back), :method => :post,
+                                              :selected => (issue && t == issue.tracker), :disabled => !can[:edit] %></li>
+                <% end -%>
+              </ul>
+            </li>
+        <% end %>
+
+        <% if safe_attributes.include?('priority_id') && priorities.present? -%>
+            <li class="folder">
+              <a href="#" class="submenu"><%= l(:field_priority) %></a>
+              <ul>
+                <% priorities.each do |p| -%>
+                    <li><%= context_menu_link p.name, bulk_update_issues_path(:ids => issue_ids, :issue => {'priority_id' => p}, :back_url => back), :method => :post,
+                                              :selected => (issue && p == issue.priority), :disabled => (!can[:edit] || issues.detect {|i| !i.leaf?}) %></li>
+                <% end -%>
+              </ul>
+            </li>
+        <% end %>
+
+        <% if safe_attributes.include?('fixed_version_id') && versions.present? -%>
+            <li class="folder">
+              <a href="#" class="submenu"><%= l(:field_fixed_version) %></a>
+              <ul>
+                <% versions.sort.each do |v| -%>
+                    <li><%= context_menu_link format_version_name(v), bulk_update_issues_path(:ids => issue_ids, :issue => {'fixed_version_id' => v}, :back_url => back), :method => :post,
+                                              :selected => (issue && v == issue.fixed_version), :disabled => !can[:edit] %></li>
+                <% end -%>
+                <li><%= context_menu_link l(:label_none), bulk_update_issues_path(:ids => issue_ids, :issue => {'fixed_version_id' => 'none'}, :back_url => back), :method => :post,
+                                          :selected => (issue && issue.fixed_version.nil?), :disabled => !can[:edit] %></li>
+              </ul>
+            </li>
+        <% end %>
+
+        <% if safe_attributes.include?('assigned_to_id') && assignables.present? -%>
+            <li class="folder">
+              <a href="#" class="submenu"><%= l(:field_assigned_to) %></a>
+              <ul>
+                <% if assignables.include?(User.current) %>
+                    <li><%= context_menu_link "<< #{l(:label_me)} >>", bulk_update_issues_path(:ids => issue_ids, :issue => {'assigned_to_id' => User.current}, :back_url => back), :method => :post,
+                                              :disabled => !can[:edit] %></li>
+                <% end %>
+                <% assignables.each do |u| -%>
+                    <li><%= context_menu_link u.name, bulk_update_issues_path(:ids => issue_ids, :issue => {'assigned_to_id' => u}, :back_url => back), :method => :post,
+                                              :selected => (issue && u == issue.assigned_to), :disabled => !can[:edit] %></li>
+                <% end -%>
+                <li><%= context_menu_link l(:label_nobody), bulk_update_issues_path(:ids => issue_ids, :issue => {'assigned_to_id' => 'none'}, :back_url => back), :method => :post,
+                                          :selected => (issue && issue.assigned_to.nil?), :disabled => !can[:edit] %></li>
+              </ul>
+            </li>
+        <% end %>
+
+        <% if safe_attributes.include?('category_id') && project && project.issue_categories.any? -%>
+            <li class="folder">
+              <a href="#" class="submenu"><%= l(:field_category) %></a>
+              <ul>
+                <% project.issue_categories.each do |u| -%>
+                    <li><%= context_menu_link u.name, bulk_update_issues_path(:ids => issue_ids, :issue => {'category_id' => u}, :back_url => back), :method => :post,
+                                              :selected => (issue && u == issue.category), :disabled => !can[:edit] %></li>
+                <% end -%>
+                <li><%= context_menu_link l(:label_none), bulk_update_issues_path(:ids => issue_ids, :issue => {'category_id' => 'none'}, :back_url => back), :method => :post,
+                                          :selected => (issue && issue.category.nil?), :disabled => !can[:edit] %></li>
+              </ul>
+            </li>
+        <% end -%>
+
+        <% if safe_attributes.include?('done_ratio') && Issue.use_field_for_done_ratio? %>
+            <li class="folder">
+              <a href="#" class="submenu"><%= l(:field_done_ratio) %></a>
+              <ul>
+                <% (0..10).map{|x|x*10}.each do |p| -%>
+                    <li><%= context_menu_link "#{p}%", bulk_update_issues_path(:ids => issue_ids, :issue => {'done_ratio' => p}, :back_url => back), :method => :post,
+                                              :selected => (issue && p == issue.done_ratio), :disabled => (!can[:edit] || issues.detect {|i| !i.leaf?}) %></li>
+                <% end -%>
+              </ul>
+            </li>
+        <% end %>
+
+        <% options_by_custom_field.each do |field, options| %>
+            <li class="folder cf_<%= field.id %>">
+              <a href="#" class="submenu"><%= field.name %></a>
+              <ul>
+                <% options.each do |text, value| %>
+                    <li><%= bulk_update_custom_field_context_menu_link(field, text, value || text) %></li>
+                <% end %>
+                <% unless field.is_required? %>
+                    <li><%= bulk_update_custom_field_context_menu_link(field, l(:label_none), '__none__') %></li>
+                <% end %>
+              </ul>
+            </li>
+        <% end %>
+
+        <% if can[:add_watchers] %>
+            <li class="folder">
+              <a href="#" class="submenu"><%= l(:label_issue_watchers) %></a>
+              <ul>
+                <li><%= context_menu_link l(:button_add),
+                                          new_watchers_path(:object_type => 'issue', :object_id => issue_ids),
+                                          :remote => true,
+                                          :class => 'icon-add' %></li>
+              </ul>
+            </li>
+        <% end %>
+
+        <% if User.current.logged? %>
+            <li><%= watcher_link(issues, User.current) %></li>
+        <% end %>
+
+        <% unless issue %>
+            <li><%= context_menu_link l(:button_filter), _project_issues_path(project, :set_filter => 1, :status_id => "*", :issue_id => issue_ids.join(",")),
+                                      :class => 'icon-list' %></li>
+        <% end %>
+
+        <% if issue.present? %>
+            <% if can[:log_time] -%>
+                <li><%= context_menu_link l(:button_log_time), new_issue_time_entry_path(issue),
+                                          :class => 'icon-time-add' %></li>
+            <% end %>
+            <li><%= context_menu_link l(:button_copy), project_copy_issue_path(project, issue),
+                                      :class => 'icon-copy', :disabled => !can[:copy] %></li>
+        <% else %>
+            <li><%= context_menu_link l(:button_copy), bulk_edit_issues_path(:ids => issue_ids, :copy => '1'),
+                                      :class => 'icon-copy', :disabled => !can[:copy] %></li>
+        <% end %>
+        <li><%= context_menu_link l(:button_delete), issues_path(:ids => issue_ids, :back_url => back),
+                                  :method => :delete, :data => {:confirm => issues_destroy_confirmation_message(issues)}, :class => 'icon-del', :disabled => !can[:delete] %></li>
+    </ul>
+    </div>
+    <% end %>
 <%- end %>
 
 <%- content_for :helpers do %>

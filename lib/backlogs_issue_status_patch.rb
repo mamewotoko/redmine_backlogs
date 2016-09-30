@@ -11,6 +11,21 @@ module Backlogs
     end
 
     module InstanceMethods
+
+      def new_statuses_allowed_to_with_new_statuses_allowed_to_system
+        allowed_statuses = new_statuses_allowed_to_without_new_statuses_allowed_to_system
+        if(Setting.respond_to? :plugin_redmine_project_issue_statuses)
+          if Setting.plugin_redmine_project_issue_statuses == nil || Setting.plugin_redmine_project_issue_statuses == ""
+            Setting.plugin_redmine_project_issue_statuses = {'issueStatusToProject' => {}}
+          end
+          if Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'] == nil || Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'] == ""
+            Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'] = {}
+          end
+          allowed_statuses.delete_if { |status| (status.name == "Backlog" || Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'].has_key?(status.id)) }
+        end
+        return allowed_statuses
+      end
+
       def backlog(tracker=nil)
         unless tracker
           Rails.logger.warn("IssueStatus.backlog called without parameter")
