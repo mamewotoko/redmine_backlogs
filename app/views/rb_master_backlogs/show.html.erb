@@ -391,9 +391,16 @@
     </div>
   </div>
   </div>
-    <%  stories = @product_backlog[:stories].to_a
-        @sprint_backlogs.each do |item|
-          stories.concat(item[:stories].to_a)
+    <%  stories = @product_backlog[:stories].respond_to?('to_a') ? @product_backlog[:stories].to_a : []
+        if @release_backlogs.respond_to?('each')
+          @sprint_backlogs.each do |item|
+            stories.concat(item[:stories].to_a)
+          end
+        end
+        if @release_backlogs.respond_to?('each')
+          @release_backlogs.each do |item|
+            stories.concat(item[:stories].to_a)
+          end
         end
     %>
     <div id="context-menu" class="reverse-x" style="left:0;top:0;display: none;">

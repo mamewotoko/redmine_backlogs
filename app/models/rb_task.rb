@@ -87,6 +87,9 @@ class RbTask < Issue
       parent = Issue.find(params['parent_issue_id'])
       task.start_date = parent.start_date
     end
+    if params.has_key?(:conditions) && !params['conditions'].empty?
+      task.description = params['description'] + "\n" + "\n" + "Conditions of Satisfaction:" + "\n" + params['conditions']
+    end
     task.save!
 
     raise "Block list must be comma-separated list of task IDs" if is_impediment && !task.validate_blocks_list(blocks) # could we do that before save and integrate cross-project checks?
@@ -147,6 +150,9 @@ class RbTask < Issue
         end
         sprint_start = self.story.fixed_version.becomes(RbSprint).sprint_start_date if self.story
         self.estimated_hours = self.remaining_hours if (sprint_start == nil) || (Date.today < sprint_start)
+        if params.has_key?(:conditions) && !params['conditions'].empty?
+          description = params['description'] + "\n" + "\n" + "Conditions of Satisfaction:" + "\n" + params['conditions']
+        end
         save
       end
 
