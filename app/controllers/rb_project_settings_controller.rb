@@ -55,7 +55,6 @@ class RbProjectSettingsController < RbApplicationController
     end
     if Setting.respond_to? :plugin_redmine_project_issue_statuses
       if(params[:status] != nil && params[:status] != "" && params[:deleteProjectIssueStatus])
-        issue_status.name = params[:status]
         if Setting.plugin_redmine_project_issue_statuses == nil || Setting.plugin_redmine_project_issue_statuses == ""
           Setting.plugin_redmine_project_issue_statuses = {'issueStatusToProject' => {}}
         end
