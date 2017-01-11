@@ -6,7 +6,7 @@ class RbProjectSettingsController < RbApplicationController
 
   def project_settings
     if Setting.respond_to? :plugin_redmine_project_issue_statuses
-      if(params[:status] != nil && params[:status] != "" && params[:action] == "New Issue Status")
+      if(params[:status] != nil && params[:status] != "" && params[:createProjectIssueStatus])
         issue_status = IssueStatus.new()
         issue_status.name = params[:status]
         if Setting.plugin_redmine_project_issue_statuses == nil || Setting.plugin_redmine_project_issue_statuses == ""
@@ -54,7 +54,7 @@ class RbProjectSettingsController < RbApplicationController
       end
     end
     if Setting.respond_to? :plugin_redmine_project_issue_statuses
-      if(params[:status] != nil && params[:status] != "" && params[:action] == "Delete Issue Status")
+      if(params[:status] != nil && params[:status] != "" && params[:deleteProjectIssueStatus])
         issue_status.name = params[:status]
         if Setting.plugin_redmine_project_issue_statuses == nil || Setting.plugin_redmine_project_issue_statuses == ""
           Setting.plugin_redmine_project_issue_statuses = {'issueStatusToProject' => {}}
@@ -72,10 +72,11 @@ class RbProjectSettingsController < RbApplicationController
           end
           issue_status.destroy
           if issue_status.destroyed?
-           flash[:success] = 'Deleted project issue status.'
+            flash[:success] = 'Deleted project issue status.'
           else
             flash[:error] = 'Unable to delete issue status, unknown reason.'
           end
+          flash[:success] = 'Deleted project issue status.'
         else
           flash[:error] = 'Unable to delete issue status.  Maybe the name is invalid or it exists as a global issue status?'
         end
