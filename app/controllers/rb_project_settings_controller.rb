@@ -69,13 +69,16 @@ class RbProjectSettingsController < RbApplicationController
           if (Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'][issue_status.id].include?(@project.id))
             Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'][issue_status.id].delete(@project.id)
           end
-          issue_status.destroy
-          if issue_status.destroyed?
-            flash[:success] = 'Deleted project issue status.'
+          if Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'][issue_status.id].empty?
+            issue_status.destroy
+            if issue_status.destroyed?
+              flash[:success] = 'Deleted project issue status.'
+            else
+              flash[:warning] = 'Deleted issue status as a project issue status but unable to delete issue status in database, may be a global issue status now.'
+            end
           else
-            flash[:error] = 'Unable to delete issue status, unknown reason.'
+            flash[:success] = 'Deleted project issue status.'
           end
-          flash[:success] = 'Deleted project issue status.'
         else
           flash[:error] = 'Unable to delete issue status.  Maybe the name is invalid or it exists as a global issue status?'
         end
