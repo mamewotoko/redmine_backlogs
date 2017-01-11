@@ -62,7 +62,7 @@ class RbProjectSettingsController < RbApplicationController
           Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'] = {}
         end
         issue_status = IssueStatus.find_by(name: params[:status])
-        if(params[:status] != "Backlog" && Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'].has_key?(issue_status.id))
+        if(params[:status] != "Backlog" && Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'].has_key?(issue_status.id) && !(Issue.where(:status_id => issue_status.id, :project_id => @project.id).any?))
           if(!Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'][issue_status.id].respond_to?('include?'))
             Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'][issue_status.id] = []
           end
@@ -80,7 +80,7 @@ class RbProjectSettingsController < RbApplicationController
             flash[:success] = 'Deleted project issue status.'
           end
         else
-          flash[:error] = 'Unable to delete issue status.  Maybe the name is invalid or it exists as a global issue status?'
+          flash[:error] = 'Unable to delete issue status.  Maybe it is in use, the name is invalid, or it exists as a global issue status?'
         end
       end
     end
