@@ -38,9 +38,9 @@
         box.css('left', 0);
       }
       else {
-        box.css('position', 'fixed');
-        box.css('top', 0);
-        box.css({'left': box.containerLeft - $(document).scrollLeft() });
+        box.css('position', 'absolute');
+        box.css('top', box.initialTop + $( document ).scrollTop() - box.initialOffsetTop);
+        box.css('left', 0);
       }
 		};
 		
