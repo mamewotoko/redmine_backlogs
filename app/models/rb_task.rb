@@ -85,7 +85,12 @@ class RbTask < Issue
     task = new(attribs)
     if params['parent_issue_id'] && params['parent_issue_id'] != ""
       parent = Issue.find(params['parent_issue_id'])
-      task.start_date = parent.start_date
+      if Date.today <= parent.due_date
+        task.start_date = Date.today
+      else
+        task.start_date = parent.start_date
+      end
+      task.due_date = parent.due_date
     end
     if params.has_key?(:conditions) && !params['conditions'].empty?
       task.description = params['description'] + "\n" + "\n" + "Conditions of Satisfaction:" + "\n" + params['conditions']

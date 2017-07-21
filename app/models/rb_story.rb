@@ -177,6 +177,17 @@ class RbStory < Issue
     attribs[:status] = RbStory.class_default_status
     attribs = Hash[*attribs.flatten]
     s = RbStory.new(attribs)
+    if params['fixed_version_id'] && params['fixed_version_id'] != ""
+      sprint = RbSprint.find(params['fixed_version_id'])
+      if sprint && sprint.sprint_start_date && sprint.effective_date
+        if Date.today <= sprint.effective_date
+          s.start_date = Date.today
+        else
+          s.start_date = sprint.sprint_start_date
+        end
+        s.due_date = sprint.effective_date
+      end
+    end
     s.save!
     s.position!(params)
 
