@@ -15,22 +15,22 @@
   padding: 8px;
 }
 #backlogs_container .wrapper{
-   position: relative;
-   float: left;
-   left: 0.00%;
-   width: 100.00%;
+  position: relative;
+  float: left;
+  left: 0.00%;
+  width: 100.00%;
 }
 #backlogs_container .left-col{
-   position: relative;
-   float: left;
-   left: 0.00%;
-   width: 50.00%;
+  position: relative;
+  float: left;
+  left: 0.00%;
+  width: 50.00%;
 }
 #backlogs_container .right-col{
-   position: relative;
-   float: right;
-   right: 0.00%;
-   width: 50.00%;
+  position: relative;
+  float: right;
+  right: 0.00%;
+  width: 50.00%;
 }
 #backlogs_container .backlogs-panel-inner {
   padding: 4px;
@@ -67,6 +67,7 @@
 }
 .header .fff-left{
   width: 29px;
+  height: 30px;
 }
 .header .fff-right{
   width: 228px;
@@ -248,7 +249,7 @@ ul li { vertical-align: bottom; } /* close IE7 gap between list items */
   font-weight:bold;
 }
 
-  /* container for sprint header (read) */
+/* container for sprint header (read) */
 #backlogs_container .header .headertext{
   background-color:transparent;
   display:block;
@@ -257,10 +258,6 @@ ul li { vertical-align: bottom; } /* close IE7 gap between list items */
 }
 #backlogs_container .header .model.headertext{
   cursor:pointer;
-}
-
-#backlogs_container .closedbacklog .menu{
-  display:none;
 }
 
 #backlogs_container .closedbacklog .headertext{
@@ -438,10 +435,10 @@ ul li { vertical-align: bottom; } /* close IE7 gap between list items */
 }
 
 #backlogs_container .stories .story .clearfix {
-    zoom:1;
-    clear:both;
-    height: 0; /*IE7*/
-    font-size: 0; /*IE7*/
+  zoom:1;
+  clear:both;
+  height: 0; /*IE7*/
+  font-size: 0; /*IE7*/
 }
 
 /* dialog */

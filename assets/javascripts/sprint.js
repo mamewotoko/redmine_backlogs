@@ -79,3 +79,58 @@ RB.Sprint = RB.Object.create(RB.Model, RB.EditableInplace, {
     }
   }
 });
+
+
+/***************************************
+ CLOSED SPRINT
+ ***************************************/
+
+RB.ClosedSprint = RB.Object.create( {
+    update_permission: 'update_sprints',
+    create_url: 'create_sprint',
+    update_url: 'update_sprint',
+
+    initialize: function(el){
+        var j;  // This ensures that we use a local 'j' variable, not a global one.
+        var self = this;
+
+        this.$ = j = RB.$(el);
+        this.el = el;
+
+        // Associate this object with the element for later retrieval
+        j.data('this', this);
+
+    },
+
+    getType: function(){
+        return "Sprint";
+    },
+
+    markIfClosed: function(){
+        // Do nothing
+    },
+
+    saveDirectives: function(){
+        //Do nothing
+    },
+
+    getBacklog: function(){
+        return RB.$(this.el).parents(".backlog").first();
+    },
+
+    afterCreate: function(data, textStatus, xhr){
+        this.getBacklog().data('this').drawMenu();
+    },
+
+    afterUpdate: function(data, textStatus, xhr){
+        this.getBacklog().data('this').drawMenu();
+    },
+
+    editorDisplayed: function(editor){
+
+    },
+
+    getID: function(){
+        return this.$.find('.id .v').text();
+    }
+});

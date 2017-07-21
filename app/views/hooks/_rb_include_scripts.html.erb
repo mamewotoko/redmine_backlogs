@@ -41,10 +41,33 @@
    # JQuery uses 0..6 (sunday..saturday), 7 needs to be changed to 0
    start_of_week = start_of_week.to_i % 7 %>
 <%= javascript_tag(
-       "var datepickerOptions2={dateFormat: 'yy-mm-dd', firstDay: #{start_of_week}, " +
+       "
+       function beforeShowDatePicker2(input, inst) {
+  var default_date = null;
+  switch ($(input).attr(\"id\")) {
+    case \"issue_start_date\" :
+      if ($(\"#issue_due_date\").size() > 0) {
+    default_date = $(\"#issue_due_date\").val();
+    }
+    break;
+    case \"issue_due_date\" :
+    if ($(\"#issue_start_date\").size() > 0) {
+        var start_date = $(\"#issue_start_date\").val();
+    if (start_date != \"\") {
+        start_date = new Date(Date.parse(start_date));
+    if (start_date > new Date()) {
+        default_date = $(\"#issue_start_date\").val();
+    }
+    }
+    }
+    break;
+    }
+    $(input).datepickerFallback(\"option\", \"defaultDate\", default_date);
+    }
+       var datepickerOptions2={dateFormat: 'yy-mm-dd', firstDay: #{start_of_week}, " +
            "showOn: 'button', buttonImageOnly: true, buttonImage: '" +
            path_to_image('/images/calendar.png') +
            "', showButtonPanel: true, showWeek: true, showOtherMonths: true, " +
            "selectOtherMonths: true, changeMonth: true, changeYear: true, " +
-           "beforeShow: beforeShowDatePicker};") %>
+           "beforeShow:beforeShowDatePicker2};") %>
 <%= javascript_include_tag 'changeDate.js', :plugin => 'redmine_backlogs' %>
