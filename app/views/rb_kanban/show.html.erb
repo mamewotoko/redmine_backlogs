@@ -191,7 +191,9 @@ end %>
 </tr>
 </table>
 <div id="taskboard" style = "overflow-x:scroll;">
-
+	<div align="left" style="font-size: 250%;width=100%;background-color:#CCCCCC">
+		Completed Sprint (Read Only)
+	</div>
 	
   <table id="board_header" cellspacing="0">
 	
@@ -224,7 +226,7 @@ end %>
   <table id="impediments" class="board" cellspacing="0">
     <tr>
       <td><div class="label_sprint_impediments">
-            <% if User.current.allowed_to?(:create_impediments, @project) %>
+            <% if User.current.allowed_to?(:create_impediments, @project) && @sprint.open? %>
             <span class="add_new">
               <%= image_tag("add.png", :alt => "+") %>
             </span>
@@ -268,7 +270,7 @@ end %>
             <div class="tooltip_text"></div>
             <%= link_to story.id, {:controller => 'issues', :action => 'show', :id => story.id}, { :target => "_blank" } %>
             <div class="v"><%= story.id %></div>
-            <% if User.current.allowed_to?(:create_tasks, @project) %>
+            <% if User.current.allowed_to?(:create_tasks, @project) && @sprint.open? %>
             <span class="add_new">
               <%= image_tag("add.png", :alt => "+") %>
             </span>
@@ -363,7 +365,7 @@ end %>
   
   </script>
   <%# Usability: display default cursor if tasks cannot be dragged %>
-  <% unless User.current.allowed_to?(:update_tasks, @project) %>
+  <% unless User.current.allowed_to?(:update_tasks, @project) && @sprint.open? %>
     <style type="text/css">
     #kanban .issue{cursor:default;}
     </style>

@@ -15,7 +15,7 @@ RB.Impediment = RB.Object.create(RB.Task, {
     // Associate this object with the element for later retrieval
     j.data('this', this);
     
-    if (RB.permissions.update_impediments) {
+    if (RB.permissions.update_impediments && RB.permissions.open_sprint) {
       j.delegate('.editable', 'click', this.handleClick);
     }
   },

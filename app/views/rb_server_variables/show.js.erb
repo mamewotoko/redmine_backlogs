@@ -75,6 +75,10 @@ if (!RB.constants) {
       update_tasks: <%= User.current.allowed_to?(:update_tasks, @project) ? 'true' : 'false' %>,
       create_impediments: <%= User.current.allowed_to?(:create_impediments, @project) ? 'true' : 'false' %>,
       update_impediments: <%= User.current.allowed_to?(:update_impediments, @project) ? 'true' : 'false' %>
+      <% if @sprint %>
+      , open_sprint: <%= @sprint.open? ? 'true' : 'false' %>
+      <% end %>
+
   };
 <% end %>
 

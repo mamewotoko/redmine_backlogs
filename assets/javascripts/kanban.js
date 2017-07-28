@@ -47,14 +47,14 @@ RB.Kanban = RB.Object.create({
     };
 
     //initialize the cells (td) as sortable
-    if (RB.permissions.update_tasks) {
+    if (RB.permissions.update_tasks && RB.permissions.open_sprint) {
       j.find('.story-swimlane .list').sortable(RB.$.extend({
         connectWith: '.story-swimlane .list'
         }, sortableOpts));
     }
     
     //initialize the cells (td) as sortable
-    if (RB.permissions.update_tasks) {
+    if (RB.permissions.update_tasks && RB.permissions.open_sprint) {
       j.find('.list').sortable(RB.$.extend({
         connectWith: '.list'
         }, sortableOpts));
@@ -66,18 +66,18 @@ RB.Kanban = RB.Object.create({
     });
 
     // Add handler for .add_new click
-    if (RB.permissions.create_tasks) {
+    if (RB.permissions.create_tasks && RB.permissions.open_sprint) {
       j.find('#tasks .add_new').bind('click', self.handleAddNewTaskClick);
     }
     
     // Add handler for .add_new click
-    if (RB.permissions.create_tasks) {
+    if (RB.permissions.create_tasks && RB.permissions.open_sprint) {
       j.find('#tasksKanban .add_new').bind('click', self.handleAddNewTaskClick);
     }
 
 
     // Initialize impediment lists
-    if (RB.permissions.update_impediments) {
+    if (RB.permissions.update_impediments && RB.permissions.open_sprint) {
       j.find("#impediments .list").sortable(RB.$.extend({
         connectWith: '#impediments .list'
       }, sortableOpts));
@@ -89,7 +89,7 @@ RB.Kanban = RB.Object.create({
     });
 
     // Add handler for .add_new click
-    if (RB.permissions.create_impediments) {
+    if (RB.permissions.create_impediments && RB.permissions.open_sprint) {
       j.find('#impediments .add_new').bind('click', self.handleAddNewImpedimentClick);
     }
   },
