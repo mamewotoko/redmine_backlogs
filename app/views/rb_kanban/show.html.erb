@@ -191,9 +191,11 @@ end %>
 </tr>
 </table>
 <div id="taskboard" style = "overflow-x:scroll;">
-	<div style="text-align:center;vertical-align:middle;color:#000000;font-size:14px;font-weight: bold;width=100%;background-color:#ff3424">
-		Completed Sprint (Read Only)
-	</div>
+	<% if !@sprint.open? %>
+			<div style="text-align:center;vertical-align:middle;color:#000000;font-size:14px;font-weight: bold;width=100%;background-color:#ff3424">
+				Completed Sprint (Read Only)
+			</div>
+	<% end %>
 	
   <table id="board_header" cellspacing="0">
 	
@@ -226,13 +228,20 @@ end %>
   <table id="impediments" class="board" cellspacing="0">
     <tr>
       <td><div class="label_sprint_impediments">
-            <% if User.current.allowed_to?(:create_impediments, @project) && @sprint.open? %>
+				<div id="left" style="width: 87.5%; height:100%;display:table-cell;height: 100%; border-right:1px dotted #CFCFCF;margin:5px;
+						padding:5px;">
+					<%= l(:label_sprint_impediments) %>
+				</div>
+				<div id="right" style="width: 12.5%; display:table-cell;height: 100%; text-align:center; margin-left: auto;
+						margin-right: auto; vertical-align: middle;">
+					<% if User.current.allowed_to?(:create_impediments, @project) && @sprint.open? %>
             <span class="add_new">
-              <%= image_tag("add.png", :alt => "+") %>
+              <%= image_tag("plusSignIcon.svg", :alt => "+", :style => "width:100%;height:100%;", :plugin => 'redmine_backlogs') %>
             </span>
-            <% end %>
-            <%= l(:label_sprint_impediments) %>
-      </div></td>
+					<% end %>
+				</div>
+				<br style="clear:both;"/>
+			</div><</td>
       <%- @statuses.each do |status| %>
 	  <% if(Setting.respond_to? :plugin_redmine_project_issue_statuses) %>
 	  <% if Setting.plugin_redmine_project_issue_statuses == nil || Setting.plugin_redmine_project_issue_statuses == ""
@@ -266,21 +275,30 @@ end %>
     <tr id="swimlane-<%= story.id %>" class="story-swimlane">
       <td>
         <div class="story <%= mark_if_closed(story) %>" <%= build_inline_style(story).html_safe %>>
-          <div class="id story_tooltip_ajax">
-            <div class="tooltip_text"></div>
-            <%= link_to story.id, {:controller => 'issues', :action => 'show', :id => story.id}, { :target => "_blank" } %>
-            <div class="v"><%= story.id %></div>
-            <% if User.current.allowed_to?(:create_tasks, @project) && @sprint.open? %>
-            <span class="add_new">
-              <%= image_tag("add.png", :alt => "+") %>
-            </span>
-            <% end %>
-            <span class="assignee">
+          <!--<div class="subject">-->
+					<div id="storyleft" class="subject" style="width: 87.5%; height: 100%;display:table-cell;border-right:1px dotted #CFCFCF;margin:5px;
+							padding:5px;">
+						<div class="id story_tooltip_ajax">
+							<div class="tooltip_text"></div>
+							<%= link_to story.id, {:controller => 'issues', :action => 'show', :id => story.id}, { :target => "_blank" } %>
+							<div class="v"><%= story.id %></div>
+							<span class="assignee">
               <%= assignee_name_or_empty(story) %>
             </span>
-            <span class="remaininghours">(<%= story.remaining_hours.to_f %> <%= l(:label_hours) %>)</span>
-          </div>
-          <div class="subject"><%= h story.subject %></div>
+							<span class="remaininghours">(<%= story.remaining_hours.to_f %> <%= l(:label_hours) %>)</span>
+						</div>
+						<%= h story.subject %>
+					</div>
+					<div id="storyright" style="width: 12.5%; display:table-cell; height: 100%; text-align:center; margin-left: auto;
+							margin-right: auto; vertical-align: middle;">
+						<% if User.current.allowed_to?(:create_tasks, @project) && @sprint.open? %>
+            <span class="add_new">
+              <%= image_tag("plusSignIcon.svg", :alt => "+", :style => "width:100%;height:100%;", :plugin => 'redmine_backlogs') %>
+            </span>
+						<% end %>
+					</div>
+					<br style="clear:both;"/>
+					<!--</div>-->
           <%- if @project != story.project %>
             <div class="id project">
               <span class="t"><%= h story.project %></span>
@@ -426,13 +444,18 @@ end %>
 	  <% if(Setting.respond_to? :plugin_redmine_project_issue_statuses) %>
 		<% status = IssueStatus.find_by name: 'Backlog' %>
 		      <td class="swimlane list <%= status.is_closed? ? 'closed' : '' %>" id="_<%= status.id %>" -rb-status-id="<%= status.id %>" -rb-project-id="<%= @project.id %>">
-				<div class="label_kanban_new"> 
-					<% if User.current.allowed_to?(:create_tasks, @project) %>
-					<span class="add_new">
-					  <%= image_tag("add.png", :alt => "+") %>
-					</span>
-					<% end %>
-					<%= "New" %>	
+				<div class="label_kanban_new">
+						<div id="left" style="width: 87.5%;display:table-cell;height: 100%; border-right:1px dotted #CFCFCF;margin:5px;padding:5px;">
+						New
+						</div>
+						<div id="right" style="width: 12.5%; display:table-cell;height: 100%; text-align:center; margin-left: auto;margin-right: auto; vertical-align: middle;">
+						<% if User.current.allowed_to?(:create_tasks, @project) && @sprint.open? %>
+								<span class="add_new">
+								<%= image_tag("plusSignIcon.svg", :alt => "+", :style => "width:100%;height:100%;", :plugin => 'redmine_backlogs') %>
+								</span>
+						<% end %>
+						</div>
+						<br style="clear:both;"/>
 				</div>
 				<%= render_rb_task_collection(issues.select{|task| !task.parent_id && task.status_id==status.id}) %>
               </td>
