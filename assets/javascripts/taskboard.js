@@ -208,6 +208,7 @@ RB.Taskboard = RB.Object.create({
         RB.$("#col_width input").val(w);
         RB.UserPreferences.set('taskboardColWidth', w);
         RB.$(".swimlane").width(this.colWidthUnit * w).css('min-width', this.colWidthUnit * w);
+        //RB.$(".label_kanban_new").width(this.colWidthUnit * w).css('min-width', this.colWidthUnit * w);
         RB.$(".label_kanban_new").width(this.colWidthUnit * w).css('width', this.colWidthUnit * w - 20);
     }
 });
@@ -263,7 +264,7 @@ RB.UserFilter = RB.Object.create({
 
         //Parse through all the stories and hide the ones not used
         RB.$('.story').each(function() {
-            var sprintInfo = RB.$(this).children('.id').children('a')[0];
+            var sprintInfo = RB.$(this).find('.id').children('a')[0];
             var storyID = sprintInfo.innerHTML;
 
             var isClosed = RB.$(this).hasClass('closed');

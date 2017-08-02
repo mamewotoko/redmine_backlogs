@@ -237,6 +237,7 @@ end %>
 					<% if User.current.allowed_to?(:create_impediments, @project) && @sprint.open? %>
             <span class="add_new">
               <%= image_tag("plusSignIcon.svg", :alt => "+", :style => "width:100%;height:100%;", :plugin => 'redmine_backlogs') %>
+							Add Imp.
             </span>
 					<% end %>
 				</div>
@@ -294,6 +295,7 @@ end %>
 						<% if User.current.allowed_to?(:create_tasks, @project) && @sprint.open? %>
             <span class="add_new">
               <%= image_tag("plusSignIcon.svg", :alt => "+", :style => "width:100%;height:100%;", :plugin => 'redmine_backlogs') %>
+							Add Task
             </span>
 						<% end %>
 					</div>
@@ -452,6 +454,7 @@ end %>
 						<% if User.current.allowed_to?(:create_tasks, @project) && @sprint.open? %>
 								<span class="add_new">
 								<%= image_tag("plusSignIcon.svg", :alt => "+", :style => "width:100%;height:100%;", :plugin => 'redmine_backlogs') %>
+								Add Task
 								</span>
 						<% end %>
 						</div>
