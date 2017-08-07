@@ -3,9 +3,12 @@
 <%= if (! ((Redmine::VERSION::MAJOR == 2) && (Redmine::VERSION::MINOR >= 1)) || 
           (Redmine::VERSION::MAJOR > 2)
        ) || (controller.is_a? RbApplicationController)
-      javascript_include_tag 'jquery/jquery-1.7.2-ui-1.8.21-ujs-2.0.3.js', :plugin => 'redmine_backlogs'
+javascript_include_tag('jquery/jquery-1.7.2-ui-1.8.21-ujs-2.0.3.js',
+                       'jquery/jquery.ui.touch-punch.min.js',
+                       :plugin => 'redmine_backlogs')
     end
 %>
+
 <%= javascript_include_tag 'jquery/jquery.verticalfix-min.js', :plugin => 'redmine_backlogs' %>
 <!--[if IE]>
 <%= javascript_include_tag 'jquery/jquery.jqplot/excanvas.js', :plugin => 'redmine_backlogs' %>
