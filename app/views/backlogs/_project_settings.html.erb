@@ -32,14 +32,16 @@
   <%= check_box_tag("settings[show_in_scrum_stats]", 'enabled',
       @project.rb_project_settings.show_in_scrum_stats) %>
 </p>
-  <% if (Setting.respond_to? :plugin_redmine_project_issue_statuses) %>
+<!--
+  % if (Setting.respond_to? :plugin_redmine_project_issue_statuses) %>
       <p>
-        <form class="button_to" method="get" action="/projects/<%= @project.identifier %>">
+        <form class="button_to" method="get" action="/projects/%= @project.identifier %>">
           <input id="nameIssueStatus" type="text" value="" name="status">
           <input type="submit" name="createProjectIssueStatus" value="New Issue Status"> <input type="submit" name="deleteProjectIssueStatus" value="Delete Issue Status">
         </form>
       </p>
-  <% end %>
+  % end %>
+-->
 </div>
 <%= submit_tag(l(:button_save)) %>
 <% end %>

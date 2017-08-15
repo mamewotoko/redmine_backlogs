@@ -21,7 +21,22 @@ module Backlogs
           :label => :label_backlogs
         } if @project.module_enabled?('backlogs') and 
              User.current.allowed_to?(:configure_backlogs, nil, :global=>true)
-        return tabs
+=begin
+          if(Setting.respond_to? :plugin_redmine_project_issue_statuses) %>
+            if Setting.plugin_redmine_project_issue_statuses == nil || Setting.plugin_redmine_project_issue_statuses == ""
+              Setting.plugin_redmine_project_issue_statuses = {'issueStatusToProject' => {}}
+            end
+            if Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'] == nil || Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'] == ""
+              Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'] = {}
+            end
+            tabs << {:name => 'backlogs',
+                     :action => :manage_project_backlogs,
+                     :partial => 'backlogs/project_settings',
+                     :label => :label_backlogs
+            }
+          end
+=end
+          return tabs
       end
 
     end
