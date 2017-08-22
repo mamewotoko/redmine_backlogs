@@ -44,7 +44,12 @@ module Backlogs
           if Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'] == nil || Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'] == ""
             Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'] = {}
           end
-          allowed_statuses.delete_if { |status| (status.name == "Backlog" || Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'].has_key?(status.id)) }
+          if Setting.plugin_redmine_project_issue_statuses['issueStatusToKanban'] == nil || Setting.plugin_redmine_project_issue_statuses['issueStatusToKanban'] == ""
+            Setting.plugin_redmine_project_issue_statuses['issueStatusToKanban'] = {}
+          end
+          allowed_statuses.delete_if do |status|
+            status.name == "Backlog" || Setting.plugin_redmine_project_issue_statuses['issueStatusToKanban'].has_key?(status.id) && Setting.plugin_redmine_project_issue_statuses['issueStatusToKanban'][status.id].respond_to?('include?') && !Setting.plugin_redmine_project_issue_statuses['issueStatusToKanban'][status.id].empty? || Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'].has_key?(status.id) && Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'][status.id].respond_to?('include?') && !Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'][status.id].empty? && !Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'][status.id].include?(project.id)
+          end
         end
         return allowed_statuses
       end
