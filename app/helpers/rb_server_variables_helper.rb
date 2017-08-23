@@ -42,11 +42,11 @@ module RbServerVariablesHelper
               Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'] = {}
             end 
             allowed = []
-            allowed_statues.each do |s|
-              if s.name == "Backlog" || Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'].has_key?(s.id)
+            allowed_statues.each do |status|
+              if status.name == "Backlog" || Setting.plugin_redmine_project_issue_statuses['issueStatusToKanban'].has_key?(status.id) && Setting.plugin_redmine_project_issue_statuses['issueStatusToKanban'][status.id].respond_to?('include?') && !Setting.plugin_redmine_project_issue_statuses['issueStatusToKanban'][status.id].empty? || Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'].has_key?(status.id) && Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'][status.id].respond_to?('include?') && !Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'][status.id].empty? && !Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'][status.id].include?(project.id)
                 #Do nothing for now.
               else
-                allowed.push(s.id.to_s)
+                allowed.push(status.id.to_s)
               end
             end
           else
