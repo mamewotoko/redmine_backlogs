@@ -43,7 +43,7 @@ module RbServerVariablesHelper
             end 
             allowed = []
             allowed_statues.each do |status|
-              if status.name == "Backlog" || Setting.plugin_redmine_project_issue_statuses['issueStatusToKanban'].has_key?(status.id) && Setting.plugin_redmine_project_issue_statuses['issueStatusToKanban'][status.id].respond_to?('include?') && !Setting.plugin_redmine_project_issue_statuses['issueStatusToKanban'][status.id].empty? || Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'].has_key?(status.id) && Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'][status.id].respond_to?('include?') && !Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'][status.id].empty? && !Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'][status.id].include?(project.id)
+              if status.name == "Backlog" || Setting.plugin_redmine_project_issue_statuses['issueStatusToKanban'].has_key?(status.id) && Setting.plugin_redmine_project_issue_statuses['issueStatusToKanban'][status.id].respond_to?('include?') && !Setting.plugin_redmine_project_issue_statuses['issueStatusToKanban'][status.id].empty? || Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'].has_key?(status.id) && Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'][status.id].respond_to?('include?') && !Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'][status.id].empty? && !Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'][status.id].include?(@project.id)
                 #Do nothing for now.
               else
                 allowed.push(status.id.to_s)
