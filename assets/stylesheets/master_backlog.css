@@ -418,7 +418,7 @@ ul li { vertical-align: bottom; } /* close IE7 gap between list items */
   text-decoration:line-through;
 }
 #backlogs_container .stories .story .status_id {
-  width:68px;
+  width:48px;
   float: left;
   padding-left:8px;
   white-space: nowrap;
@@ -631,6 +631,7 @@ ul li { vertical-align: bottom; } /* close IE7 gap between list items */
 #backlogs_container .stories .v {
   display:none;
 }
+
 #backlogs_container .stories .story.editing .category_id.editor{
   display:block;
   left:456px;
@@ -709,3 +710,9 @@ ul li { vertical-align: bottom; } /* close IE7 gap between list items */
 
 /* show completed sprints */
 #show_completed_sprints { cursor:pointer; }
+
+#backlogs_container .stories .avatar_box {
+    float:left;
+    width:20px;
+}
+
