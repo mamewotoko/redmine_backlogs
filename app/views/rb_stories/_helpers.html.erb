@@ -6,8 +6,10 @@
 </select>
 
 <select class="assigned_to_id helper" id="assigned_to_id_options">
+  <!-- nobody -->
+  <option value>&nbsp;</option>
   <%- Principal.member_of(@project).each do |member| %>
-  <option value="<%= member.id %>"><%= h member.name %></option>
+    <option value="<%= member.id %>"><%= h member.name %></option>
   <%- end %>
 </select>
 
