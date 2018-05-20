@@ -29,7 +29,10 @@
     <div class="t"><%= status_label_or_default(story) %></div>
     <div class="v"><%= status_id_or_default(story) %></div>
   </div>
-  <div class="avatar_box editable story_field" fieldtype="select" fieldname="assigned_to_id" fieldlabel="<%= l(:field_assigned_to)%>"><%= avatar(story.assigned_to, :size => 20) %></div>
+  <div class="avatar_box editable story_field" fieldtype="select" fieldname="assigned_to_id" fieldlabel="<%= l(:field_assigned_to)%>"><%= avatar(story.assigned_to, :size => 20) %>
+    <div class="t" style="display:none;"><%= assignee_name_or_empty(story) %></div>
+    <div class="v"><%= assignee_id_or_empty(story) %></div>
+  </div>
   <% if Backlogs.setting[:story_points].blank? %>
   <div class="story_points editable story_points_text story_field" fieldname="story_points" fieldlabel="<%=l(:story_points)%>" fieldtype="input"><%= story_points_or_empty(story) %></div>
   <% else %>
