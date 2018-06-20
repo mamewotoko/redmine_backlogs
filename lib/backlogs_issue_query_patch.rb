@@ -53,7 +53,7 @@ module Backlogs
         @available_filters = available_filters_without_backlogs_issue_type
         return @available_filters if !show_backlogs_issue_items?(project)
 
-        if RbStory.trackers.length == 0 or RbTask.tracker.blank?
+        if RbStory.trackers.length == 0 or RbTask.trackers.blank?
           backlogs_filters = { }
         else
           backlogs_filters = {
@@ -73,10 +73,19 @@ module Backlogs
             :type => :list_optional,
             :name => l(:field_release),
             :values => RbRelease.where(project_id: project).order('name ASC').collect { |d| [d.name, d.id.to_s]},
-            :order => 21
+            :order => 23
           }
         end
-        @available_filters = @available_filters.merge(backlogs_filters)
+
+        if (Redmine::VERSION::MAJOR == 3 && Redmine::VERSION::MINOR >= 4)
+          backlogs_filters.each do |field, filter|
+            options = {:type => filter[:type], :name => filter[:name], :values => filter[:values]}
+            add_available_filter(field, options)
+          end
+        else
+          @available_filters = @available_filters.merge(backlogs_filters)
+        end
+        @available_filters
       end
       
       def available_columns_with_backlogs_issue_type
@@ -104,7 +113,7 @@ module Backlogs
         selected_values = ['story', 'task'] if selected_values.include?('any')
 
         story_trackers = RbStory.trackers(:type=>:string)
-        all_trackers = (RbStory.trackers + [RbTask.tracker]).collect{|val| "#{val}"}.join(",")
+        all_trackers = (RbStory.trackers + RbTask.trackers).collect{|val| "#{val}"}.join(",")
 
         selected_values.each { |val|
           case val
@@ -112,7 +121,7 @@ module Backlogs
               sql << "(#{db_table}.tracker_id in (#{story_trackers}))"
 
             when "task"
-              sql << "(#{db_table}.tracker_id = #{RbTask.tracker})"
+              sql << "(#{db_table}.tracker_id in (#{RbTask.trackers}))"
 
             when "impediment"
               sql << "(#{db_table}.id in (

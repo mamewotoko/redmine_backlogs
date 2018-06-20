@@ -70,7 +70,9 @@ nl:
   backlogs_story_settings: "Story and Task settings"
   backlogs_story_tracker: "Story trackers"
   backlogs_task: Taak
-  backlogs_task_tracker: "Taak tracker"
+  backlogs_task_tracker: "Taak trackers"
+  backlogs_default_task_tracker: "Default taak tracker"
+  backlogs_show_task_story_on_taskboard: "Op het taakbord, toon taken die ook story items zijn"
   backlogs_wiki_template: "Template voor sprint wiki pagina"
   button_edit_wiki: "Wijzig wiki page"
   comma_delimited_numbers: "Komma-gescheiden getallen"
@@ -210,13 +212,3 @@ nl:
   warning_reset_sprint: |-
       JE STAAT OP HET PUNT DEZE SPRINT TE HER-INITIALISEREN!
 
-      Weet je zeker dat je dit wilt doen? Her-initialisatie
-      heeft de volgende gevolgen voor de stories en taken
-      verbonden aan de sprint:
-
-      * Creatie-datum wordt veranderd in de start datum van de sprint
-      * ALLE wijzigingen aan de stories en taken, behalve notities,
-         zullen worden VERWIJDERD
-      * De huidige waarde wordt de startwaarde voor alle
-         eigenschappen van de story/taak
-      * De status wordt teruggezet naar de standaard status

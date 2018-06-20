@@ -47,7 +47,8 @@ else
   script -e -c "cucumber $TEST_FEATURE" -f ~/redmine/cuke.log
 fi
 
-sed '/^$/d' -i ~/redmine/cuke.log
+sed '/^
+$/d' -i ~/redmine/cuke.log
 
 if [ -n "$PUBLISH" ]; then
   cd ~/redmine/redmine_backlogs

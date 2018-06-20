@@ -1,5 +1,4 @@
 <!-- MASTER BACKLOG VIEW -->
-<!-- Gray template by Jay1b ())
 <%# early javascript before common.hs %>
 <%- controller.rb_jquery_plugins = capture do %>
   <%= javascript_include_tag(
@@ -99,6 +98,9 @@
     :plugin => 'redmine_backlogs') %>
   <%= stylesheet_link_tag 'jquery/jquery.qtip.css', :plugin => 'redmine_backlogs' %>
   <%= stylesheet_link_tag 'jquery/jquery.multiselect.css', :plugin => 'redmine_backlogs' %>
+  <% if Backlogs.setting[:show_tags] == 'enabled' %>
+  <%= stylesheet_link_tag 'tags.css', :plugin => 'redmine_backlogs' %>
+  <% end %>
   <%= stylesheet_link_tag 'master_backlog.css', :plugin => 'redmine_backlogs', :media => 'print,screen' %>
   <%= stylesheet_link_tag 'master_backlog_print.css', :plugin => 'redmine_backlogs', :media => 'print' %>
   <%= stylesheet_link_tag 'context_menu.css'%>
@@ -371,8 +373,7 @@
   <a id="multiline">Multiline</a>
 <%- end %>
 
-<%- # noinspection RailsChecklist02
-    content_for :main do %>
+<%- content_for :main do %>
   <div id="backlogs_container">
   <div class="backlogs-panel-wrapper">
     <div class="backlogs-panel left-col">
@@ -604,7 +605,7 @@
 
 <%- content_for :helpers do %>
   <div id="sprint_template">
-    <%- sprint = RbSprint.new( :name => "sprint" ) -%>
+    <%- sprint = RbSprint.new( :name => "Sprint" ) -%>
     <%- sprint_backlog = { :sprint => sprint, :stories => nil } -%>
     <%= render :partial => "backlog", :object => sprint_backlog %>
   </div>

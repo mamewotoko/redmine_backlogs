@@ -8,7 +8,7 @@ class RbSprint < Version
   validate :start_and_end_dates
 
   def start_and_end_dates
-    errors.add(:base, "sprint_end_before_start") if self.effective_date && self.sprint_start_date && self.sprint_start_date > self.effective_date
+    errors.add(:base, "sprint_end_before_start") if self.effective_date && self.sprint_start_date && self.sprint_start_date >= self.effective_date
   end
 
   scope :open_sprints, lambda { |project| open_or_locked.by_date.in_project(project) }
@@ -148,7 +148,7 @@ class RbSprint < Version
                 and blocked.fixed_version_id = (?)
               where ir.relation_type = 'blocks'
               )",
-            RbStory.trackers + [RbTask.tracker],
+            RbStory.trackers + RbTask.trackers,
             self.id]
       ) #.sort {|a,b| a.closed? == b.closed? ?  a.updated_on <=> b.updated_on : (a.closed? ? 1 : -1) }
   end

@@ -106,7 +106,17 @@
 
 <p>
   <%= content_tag(:label, l(:backlogs_task_tracker)) %>
-  <%= select_tag("settings[task_tracker]", options_from_collection_for_select(Tracker.all, :id, :name, RbTask.tracker)) %>
+  <%= select_tag("settings[task_trackers]", options_from_collection_for_select(Tracker.all, :id, :name, RbTask.trackers), :multiple => true) %>
+</p>
+
+<p>
+  <%= content_tag(:label, l(:backlogs_default_task_tracker)) %>
+  <%= select_tag("settings[default_task_tracker]", options_from_collection_for_select(Tracker.all, :id, :name, Backlogs.setting[:default_task_tracker])) %>
+</p>
+
+<p>
+  <%= content_tag(:label, l(:backlogs_show_task_story_on_taskboard)) %>
+  <%= check_box_tag("settings[show_task_story_on_taskboard]",'enabled',Backlogs.setting[:show_task_story_on_taskboard]) %>
 </p>
 
 <p>
@@ -130,6 +140,10 @@
   <%= radio_button_tag("settings[scrum_stats_menu_position]", 'top', Backlogs.setting[:scrum_stats_menu_position].nil? || Backlogs.setting[:scrum_stats_menu_position] == 'top') %><%= l(:backlogs_scrum_stats_menu_top) %>
   <%= radio_button_tag("settings[scrum_stats_menu_position]", 'application', Backlogs.setting[:scrum_stats_menu_position] == 'application') %><%= l(:backlogs_scrum_stats_menu_application) %>
   <%= radio_button_tag("settings[scrum_stats_menu_position]", 'none', Backlogs.setting[:scrum_stats_menu_position] == 'none') %><%= l(:backlogs_scrum_stats_menu_none) %>
+</p>
+<p>
+  <%= content_tag(:label, l(:backlogs_sprint_length)) %>
+  <%= text_field_tag("settings[sprint_length]", Backlogs.setting[:sprint_length]) %>
 </p>
 </fieldset>
 
@@ -286,6 +300,11 @@
   <%= content_tag(:label, l(:rb_show_project_name)) %>
   <%= check_box_tag("settings[show_project_name]",'enabled',
             Backlogs.setting[:show_project_name]) %>
+</p>
+<p>
+  <%= content_tag(:label, l(:rb_show_tags)) %>
+  <%= check_box_tag("settings[show_tags]",'enabled',
+            Backlogs.setting[:show_tags]) %>
 </p>
 </fieldset>
 

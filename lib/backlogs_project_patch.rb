@@ -102,7 +102,7 @@ module Backlogs
     end
 
     def test_sprints_estimated
-      return !Issue.exists?(["estimated_hours is null and fixed_version_id in (?) and tracker_id = ?", @all_sprints.collect{|s| s.id}, RbTask.tracker])
+      return !Issue.exists?(["estimated_hours is null and fixed_version_id in (?) and tracker_id in (?)", @all_sprints.collect{|s| s.id}, RbTask.trackers])
     end
 
     def test_sprint_notes_available
@@ -193,11 +193,15 @@ module Backlogs
         RbProjectSettings.where(:project_id => self.id).first_or_create
       end
 
-      def projects_in_shared_product_backlog
+      def projects_in_shared_product_backlog(include_closed_projects = false)
         #sharing off: only the product itself is in the product backlog
         #sharing on: subtree is included in the product backlog
         if Backlogs.setting[:sharing_enabled] and self.rb_project_settings.show_stories_from_subprojects
-          self.self_and_descendants.visible.active
+          if include_closed_projects
+             self.self_and_descendants.visible
+           else
+             self.self_and_descendants.visible.active
+           end
         else
           [self]
         end

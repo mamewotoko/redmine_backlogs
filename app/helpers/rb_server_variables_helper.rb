@@ -5,7 +5,7 @@ module RbServerVariablesHelper
   # Used to render server variables for javascript DnD handling
   #
   #   workflow_transitions(RbStory)
-  def workflow_transitions(klass, includePIS = false)
+  def workflow_transitions(klass)
      roles = User.current.admin ? Role.all : User.current.roles_for_project(@project)
      transitions = {:states => {}, :transitions => {} , :default => 1 }
 

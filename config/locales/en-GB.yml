@@ -70,7 +70,9 @@ en-GB:
   backlogs_story_settings: "Story and Task settings"
   backlogs_story_tracker: "Story trackers"
   backlogs_task: Task
-  backlogs_task_tracker: "Task tracker"
+  backlogs_task_tracker: "Task trackers"
+  backlogs_default_task_tracker: "Default task tracker"
+  backlogs_show_task_story_on_taskboard: "On taskboard, show tasks that are also story items"
   backlogs_wiki_template: "Template for sprint wiki page"
   button_edit_wiki: "Edit wiki page"
   comma_delimited_numbers: "Comma delimited numbers"
@@ -192,6 +194,7 @@ en-GB:
   rb_release_burnup_enabled: "Enable release burnup chart (EXPERIMENTAL)"
   rb_show_burndown_in_sidebar: "Show burndown chart in issues sidebar"
   rb_show_project_name: "Show project name in backlogs"
+  rb_show_tags: "Show tags (requires Redmine Tags plugin)"
   rb_task_cards_stories_then_tasks: "First all stories, then all tasks"
   rb_task_cards_story_follows_tasks: "Tasks followed by their story"
   rb_task_cards_tasks_follow_story: "Story followed by their tasks"

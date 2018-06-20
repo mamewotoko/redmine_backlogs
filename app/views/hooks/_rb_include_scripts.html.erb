@@ -1,10 +1,11 @@
 <!-- rb_include_scripts -->
 <%= stylesheet_link_tag 'jquery/jquery.jqplot.min.css', :plugin => 'redmine_backlogs' %>
-<%= if (! ((Redmine::VERSION::MAJOR == 2) && (Redmine::VERSION::MINOR >= 1)) ||
-          (Redmine::VERSION::MAJOR > 2)
-       ) || (controller.is_a? RbApplicationController)
-      # javascript_include_tag 'jquery/jquery-1.7.2-ui-1.8.21-ujs-2.0.3.js', :plugin => 'redmine_backlogs'
-    end
+<%= javascript_include_tag 'jquery/jquery-1.7.2-ui-1.8.21-ujs-2.0.3.js', :plugin => 'redmine_backlogs' %>
+<%= # if (! ((Redmine::VERSION::MAJOR == 2) && (Redmine::VERSION::MINOR >= 1)) ||
+    #       (Redmine::VERSION::MAJOR > 2)
+    #    ) || (controller.is_a? RbApplicationController)
+    #   # javascript_include_tag 'jquery/jquery-1.7.2-ui-1.8.21-ujs-2.0.3.js', :plugin => 'redmine_backlogs'
+    # end
 
     # redmine uses new jquery, need some compat libs
     if ((Redmine::VERSION::MAJOR == 2) && (Redmine::VERSION::MINOR >= 5)) ||
@@ -35,6 +36,10 @@
                          :action => 'index', :format => 'js') %>">
 </script>
 <%= javascript_include_tag 'burndown.js', :plugin => 'redmine_backlogs' %>
+<%# variable for sprint length %>
+<script type="text/javascript">
+RB.sprint_length = <%= ( Backlogs.setting[:sprint_length].to_i > 0 ) ? (Backlogs.setting[:sprint_length]) : (14) %>;
+</script>
 <% start_of_week = Setting.start_of_week
    start_of_week = l(:general_first_day_of_week, :default => '1') if start_of_week.blank?
    # Redmine uses 1..7 (monday..sunday) in settings and locales

@@ -294,10 +294,11 @@ RB.Backlog = RB.Object.create({
         scrollTop: story.find('.editor').first().offset().top-100
         }, 200);
   },
+  
   newSprint: function(){
     var sprint_backlog = RB.$('#sprint_template').children().first().clone();
-	RB.$("*#sprint_backlogs_container").append(sprint_backlog);
 
+    RB.$("*#sprint_backlogs_container").append(sprint_backlog);
     o = RB.Factory.initialize(RB.Backlog, sprint_backlog);
     o.edit();
     sprint_backlog.find('.editor' ).first().focus();

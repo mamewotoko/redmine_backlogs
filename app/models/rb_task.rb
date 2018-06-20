@@ -3,16 +3,9 @@ require 'date'
 class RbTask < Issue
   unloadable
 
-  def self.tracker
-    task_tracker = Backlogs.setting[:task_tracker]
-    return nil if task_tracker.blank?
-    return Integer(task_tracker)
-  end
-
   def self.class_default_status
     begin
-      t = Tracker.find(self.tracker)
-      return t.default_status
+      return RbTask.trackers(:trackers)[0].default_status
     rescue => e
       Rails.logger.error("Task has no trackers configured #{e}")
       puts("Task has no trackers configured #{e}")
@@ -20,8 +13,10 @@ class RbTask < Issue
     end
   end
 
-  def self.tracker?(tracker_id)
-    self.tracker == tracker_id.to_i
+  def self.trackers_include?(tracker_id)
+    tracker_ids = Backlogs.setting[:task_trackers] || []
+    tracker_ids = tracker_ids.map(&:to_i)
+    tracker_ids.include?(tracker_id.to_i)
   end
 
   # unify api between story and task. FIXME: remove this when merging to tracker-free-tasks
@@ -30,7 +25,7 @@ class RbTask < Issue
     options = {:type => options} if options.is_a?(Symbol)
 
     # somewhere early in the initialization process during first-time migration this gets called when the table doesn't yet exist
-    trackers = [self.tracker]
+    trackers = Backlogs.setting[:task_trackers]
 
     begin
       trackers = Tracker.where(id: trackers)
@@ -67,7 +62,7 @@ class RbTask < Issue
     attribs = rb_safe_attributes(params)
 
     attribs['author_id'] = user_id
-    attribs['tracker_id'] = RbTask.tracker
+    attribs['tracker_id'] = Backlogs.setting[:default_task_tracker]
     attribs['project_id'] = project_id
 
     blocks = params.delete('blocks')
@@ -83,17 +78,9 @@ class RbTask < Issue
     end
 
     task = new(attribs)
-    if params['parent_issue_id'] && params['parent_issue_id'] != ""
+    if params['parent_issue_id']
       parent = Issue.find(params['parent_issue_id'])
-      if Date.today <= parent.due_date
-        task.start_date = Date.today
-      else
-        task.start_date = parent.start_date
-      end
-      task.due_date = parent.due_date
-    end
-    if params.has_key?(:conditions) && !params['conditions'].empty?
-      task.description = params['description'] + "\n" + "\n" + "Conditions of Satisfaction:" + "\n" + params['conditions']
+      task.start_date = parent.start_date
     end
     task.save!
 
@@ -155,7 +142,7 @@ class RbTask < Issue
         end
         sprint_start = self.story.fixed_version.becomes(RbSprint).sprint_start_date if self.story
         self.estimated_hours = self.remaining_hours if (sprint_start == nil) || (Date.today < sprint_start)
-        if params.has_key?(:conditions) && !params['conditions'].empty?
+        if params.has_key?(:conditions) && !params[:conditions].empty?
           description = params['description'] + "\n" + "\n" + "Conditions of Satisfaction:" + "\n" + params['conditions']
         end
         save

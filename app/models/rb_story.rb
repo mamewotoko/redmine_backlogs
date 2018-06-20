@@ -48,7 +48,7 @@ class RbStory < Issue
 
   def self.__find_options_pbl_condition(project_id)
     ["
-      issues.project_id in (#{Project.find(project_id).projects_in_shared_product_backlog.map{|p| p.id}.join(',')})
+      issues.project_id in (#{Project.find(project_id).projects_in_shared_product_backlog(Project.find(project_id).status==5 ? true : false).map{|p| p.id}.join(',')})
       and tracker_id in (?)
       and release_id is NULL
       and fixed_version_id is NULL
@@ -263,8 +263,7 @@ class RbStory < Issue
     # sometimes return numbers as Fixnums that lack the nil?
     # method. Comparing to nil should be safe.
     return notsized if story_points == nil || story_points.blank?
-    return 'S' if story_points == 0
-    return story_points.to_s
+    return "%g" % story_points
   end
 
   def update_and_position!(params)

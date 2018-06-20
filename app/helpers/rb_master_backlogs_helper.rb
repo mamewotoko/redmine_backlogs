@@ -22,7 +22,7 @@ module RbMasterBacklogsHelper
     }
     items.each do |item|
       item[:condition] = true unless item.has_key?(:condition)
-        if item[:condition] && ( (is_sprint && item[:for] == :sprint) ||
+      if item[:condition] && ( (is_sprint && item[:for] == :sprint) ||
                                (!is_sprint && item[:for] == :product) ||
                                (item[:for] == :both) )
         html += %{ <li class="item">#{item[:item]}</li> }
