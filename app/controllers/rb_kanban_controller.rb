@@ -19,8 +19,8 @@ class RbKanbanController < RbApplicationController
     @settings = Backlogs.settings
 
     ## determine status columns to show
-    tracker = Tracker.find_by_id(RbTask.tracker)
-    statuses = tracker.issue_statuses
+    trackers = (RbTask.trackers - RbStory.trackers).map{|s| Tracker.find_by_id(s)}
+    statuses = trackers.map{|s| s.issue_statuses}.flatten!.uniq
     # disable columns by default
     if User.current.admin?
       @statuses = statuses

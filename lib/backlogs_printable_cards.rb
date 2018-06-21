@@ -212,6 +212,10 @@ module BacklogsPrintableCards
         }
       }
 
+      if !File.exist?(File.dirname(__FILE__) + '/labels/labels.yaml')
+        print "Default labels installed\n"
+        FileUtils.cp(File.dirname(__FILE__) + '/labels/labels.yaml.default', File.dirname(__FILE__) + '/labels/labels.yaml')
+      end
       File.open(File.dirname(__FILE__) + '/labels/labels.yaml', 'w') do |dump|
         YAML.dump(@@layouts, dump)
       end
@@ -222,6 +226,10 @@ module BacklogsPrintableCards
 
     @@layouts ||= {}
     begin
+      if !File.exist?(File.dirname(__FILE__) + '/../labels/labels.yaml')
+        print "Default labels installed\n"
+        FileUtils.cp(File.dirname(__FILE__) + '/labels/labels.yaml.default', File.dirname(__FILE__) + '/labels/labels.yaml')
+      end
       layouts = YAML::load_file(File.dirname(__FILE__) + '/labels/labels.yaml')
       layouts.each_pair{|key, spec|
         if spec.instance_of?(CardPageLayout)
