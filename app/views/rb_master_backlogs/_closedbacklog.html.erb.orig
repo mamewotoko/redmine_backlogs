@@ -1,0 +1,16 @@
+<div class="closedbacklog">
+  <div class="header">
+<<<<<<< HEAD
+      <%= render :partial => "rb_sprints/sprint", :object => closedbacklog[:sprint], :locals => {:cls => 'model sprint'} %>
+=======
+      <%= render :partial => "rb_sprints/sprint", :object => closedbacklog[:sprint], :locals => {:cls => 'sprint'} %>
+>>>>>>> eurailcom/eurail
+  </div>
+  <ul class="stories" id="stories_closed" style="display:block">
+    <%= render :partial => "rb_stories/story", :collection => closedbacklog[:stories] %>
+  </ul>
+<<<<<<< HEAD
+</div>
+=======
+</div>
+>>>>>>> eurailcom/eurail
