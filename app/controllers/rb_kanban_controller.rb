@@ -50,8 +50,8 @@ class RbKanbanController < RbApplicationController
     if @sprint.stories.size == 0
       @last_updated = nil
     else
-      @last_updated = RbTask.where(tracker_id: RbTask.tracker, fixed_version_id: @sprint.stories[0].fixed_version_id)
-                            .order("updated_on DESC").first
+      @last_updated = RbTask.where(tracker_id: RbTask.trackers, fixed_version_id: @sprint.stories[0].fixed_version_id)
+                          .order("updated_on DESC").first
     end
 
     respond_to do |format|
