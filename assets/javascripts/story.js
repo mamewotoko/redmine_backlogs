@@ -37,6 +37,7 @@ RB.Story = RB.Object.create(RB.Issue, RB.EditableInplace, {
 
   editorDisplayed: function(editor){
     var tracker = editor.find('.tracker_id.editor');
+    if(this.isNew()) tracker.val(RB.constants.story_states['default_story_tracker']);
     var status = editor.find('.status_id.editor');
     var self = this;
 

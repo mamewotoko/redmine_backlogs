@@ -7,14 +7,14 @@ module RbServerVariablesHelper
   #   workflow_transitions(RbStory)
   def workflow_transitions(klass, includePIS = false)
      roles = User.current.admin ? Role.all : User.current.roles_for_project(@project)
-     transitions = {:states => {}, :transitions => {} , :default => 1 }
+     transitions = {:states => {}, :transitions => {} , :default => 1, :default_story_tracker => Backlogs.settings['default_story_tracker'].to_i}
 
      klass.trackers.each {|tracker_id|
       tracker = Tracker.find(tracker_id)
       tracker_id = tracker_id.to_s
 
       default_status = tracker.default_status
-      transitions[:default] = default_status if default_status
+      transitions[:default] = default_status if default_status && tracker_id == Backlogs.settings['default_story_tracker']
       transitions[:transitions][tracker_id] = {}
 
       tracker.issue_statuses.each {|status|
