@@ -31,7 +31,7 @@ RB.Task = RB.Object.create(RB.Issue, {
       this.$.css('filter', 'progid:DXImageTransform.Microsoft.Gradient(Enabled=1,GradientType=0,StartColorStr='+c_light+',EndColorStr='+c+')');
     }
   },
-  
+
   editorDisplayed: function(dialog){
     dialog_bgcolor=this.$.css('background-color');
     dialog_bg=this.$.css('background-image');
@@ -71,7 +71,7 @@ RB.Task = RB.Object.create(RB.Issue, {
     var data = j.find('.editor').serialize() +
                "&parent_issue_id=" + cellID[0] +
                "&status_id=" + cellID[1] +
-               "&next=" + (nxt.length==1 ? nxt.data('this').getID() : '') +
+               "&next=" + (nxt.length==1 && nxt.data('this') !== undefined ? nxt.data('this').getID() : '') +
                (this.isNew() ? "" : "&id=" + j.children('.id').text());
 
     if( project.length){
