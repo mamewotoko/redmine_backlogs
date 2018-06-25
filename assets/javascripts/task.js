@@ -67,9 +67,9 @@ RB.Task = RB.Object.create(RB.Issue, {
     var nxt = this.$.next();
     var project = j.parents('tr').find('.story .project .v');
     var cellID = j.parents('td').first().attr('id').split("_");
-
+    
     var data = j.find('.editor').serialize() +
-               "&parent_issue_id=" + cellID[0] +
+                ((cellID[0] == "-1" || cellID[0] == -1) ? ("&fixed_version_id=" + cellID[2]) : ("&parent_issue_id=" + cellID[0])) +
                "&status_id=" + cellID[1] +
                "&next=" + (nxt.length==1 && nxt.data('this') !== undefined ? nxt.data('this').getID() : '') +
                (this.isNew() ? "" : "&id=" + j.children('.id').text());

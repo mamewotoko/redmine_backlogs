@@ -126,7 +126,6 @@ RB.Kanban = RB.Object.create({
             // allow dragging to same status to prevent weird behavior
             // if one tries drag into another story but same status.
             if (new_status_id == status_id) { return; }
-
             var states = RB.constants.task_states['transitions'][tracker_id][user_status][status_id];
             if (!states) { states = RB.constants.task_states['transitions'][tracker_id][user_status][RB.constants.task_states['transitions'][tracker_id][user_status]['default']]; }
             if (RB.$.inArray(String(new_status_id), states) < 0) {
