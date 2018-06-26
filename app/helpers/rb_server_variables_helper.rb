@@ -35,12 +35,15 @@ module RbServerVariablesHelper
           
           
           if(!includePIS && (Setting.respond_to? :plugin_redmine_project_issue_statuses))
-            if Setting.plugin_redmine_project_issue_statuses == nil || Setting.plugin_redmine_project_issue_statuses == ""
-              Setting.plugin_redmine_project_issue_statuses = {'issueStatusToProject' => {}}
-            end 
-            if Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'] == nil || Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'] == ""
-              Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'] = {}
-            end 
+              if Setting.plugin_redmine_project_issue_statuses == nil || Setting.plugin_redmine_project_issue_statuses == ""
+                Setting.plugin_redmine_project_issue_statuses = {'issueStatusToProject' => {}, 'issueStatusToKanban' => {}}
+              end
+              if Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'] == nil || Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'] == ""
+                Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'] = {}
+              end
+              if Setting.plugin_redmine_project_issue_statuses['issueStatusToKanban'] == nil || Setting.plugin_redmine_project_issue_statuses['issueStatusToKanban'] == ""
+                Setting.plugin_redmine_project_issue_statuses['issueStatusToKanban'] = {}
+              end
             allowed = []
             allowed_statues.each do |status|
               if status.name == "Backlog" || Setting.plugin_redmine_project_issue_statuses['issueStatusToKanban'].has_key?(status.id) && Setting.plugin_redmine_project_issue_statuses['issueStatusToKanban'][status.id].respond_to?('include?') && !Setting.plugin_redmine_project_issue_statuses['issueStatusToKanban'][status.id].empty? || Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'].has_key?(status.id) && Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'][status.id].respond_to?('include?') && !Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'][status.id].empty? && !Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'][status.id].include?(@project.id)
