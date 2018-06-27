@@ -216,7 +216,7 @@ end %>
 			if(status.name != "Backlog" && (!Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'][status.id].respond_to?('include?') ||
 					Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'][status.id].respond_to?('include?') && Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'][status.id].empty? ||
 					Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'][status.id].respond_to?('include?') && !Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'][status.id].empty? && Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'][status.id].include?(@project.id) &&
-					(Setting.plugin_redmine_project_issue_statuses['issueStatusToKanban'][status.id].respond_to?('include?') && Setting.plugin_redmine_project_issue_statuses['issueStatusToKanban'][status.id].include?(@project.id) || Setting.plugin_redmine_project_issue_statuses['issueStatusToKanban'][status.id] == @project.id))
+					(Setting.plugin_redmine_project_issue_statuses['issueStatusToKanban'][status.id].respond_to?('include?') && Setting.plugin_redmine_project_issue_statuses['issueStatusToKanban'][status.id].include?(@project.id) || Setting.plugin_redmine_project_issue_statuses['issueStatusToKanban'][status.id] == @project.id)))
 			%>
 				
 		<%	end
