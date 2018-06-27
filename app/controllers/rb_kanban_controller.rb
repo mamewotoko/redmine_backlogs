@@ -37,10 +37,11 @@ class RbKanbanController < RbApplicationController
         # enable all statuses the current user can reach from any task status
         [false, true].each {|creator|
           [false, true].each {|assignee|
-
+            trackers.each {|tracker|
             allowed = status.new_statuses_allowed_to(roles, tracker, creator, assignee).collect{|s| s.id}
             #@transitions["c#{creator ? 'y' : 'n'}a#{assignee ? 'y' : 'n'}"] = allowed
             allowed.each{|s| enabled[s] = true}
+            }
           }
         }
       }
