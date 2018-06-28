@@ -214,17 +214,20 @@ end %>
 			 end
 		if (status.name == "Backlog" || Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'].has_key?(status.id) || Setting.plugin_redmine_project_issue_statuses['issueStatusToKanban'].has_key?(status.id))
 			if(status.name != "Backlog" &&
-					(Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'].has_key?(status.id) && Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'][status.id].respond_to?('include?') && !Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'][status.id].include?(@project.id))) #||
-					#(Setting.plugin_redmine_project_issue_statuses['issueStatusToKanban'].has_key?(status.id) && Setting.plugin_redmine_project_issue_statuses['issueStatusToKanban'][status.id].respond_to?('include?') && Setting.plugin_redmine_project_issue_statuses['issueStatusToKanban'][status.id].size > 0 && !(Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'][status.id].respond_to?('include?') && !Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'][status.id].empty? && Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'][status.id].include?(@project.id) && !Setting.plugin_redmine_project_issue_statuses['issueStatusToKanban'][status.id].include?(@project.id))))
+					(Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'].has_key?(status.id) && Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'][status.id].respond_to?('include?') && !Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'][status.id].include?(@project.id)) ||
+					(Setting.plugin_redmine_project_issue_statuses['issueStatusToKanban'].has_key?(status.id) && Setting.plugin_redmine_project_issue_statuses['issueStatusToKanban'][status.id].respond_to?('include?') && Setting.plugin_redmine_project_issue_statuses['issueStatusToKanban'][status.id].size > 0 && !(Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'][status.id].respond_to?('include?') && !Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'][status.id].empty? && Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'][status.id].include?(@project.id) && !Setting.plugin_redmine_project_issue_statuses['issueStatusToKanban'][status.id].include?(@project.id))))
 			%>
 				
-		<%	end
+		<%
 		else  %>
 			<td class="swimlane"><%= h status.name %></td>
 		<% end
 		%>
 	  <% else %>
 		<td class="swimlane"><%= h status.name %></td>
+	  <% end %>
+	  <% else %>
+			<td class="swimlane"><%= h status.name %></td>
 	  <% end %>
       <%- end %>
     </tr>
