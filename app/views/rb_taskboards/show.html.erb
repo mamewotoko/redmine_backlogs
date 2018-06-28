@@ -80,27 +80,36 @@
   <table id="board_header" cellspacing="0">
     <tr>
       <td><%= l(:backlogs_story) %></td>
-      <%- @statuses.each do |status| %>
-	  <% if(Setting.respond_to? :plugin_redmine_project_issue_statuses) %>
-	  <% if Setting.plugin_redmine_project_issue_statuses == nil || Setting.plugin_redmine_project_issue_statuses == ""
-		  Setting.plugin_redmine_project_issue_statuses = {'issueStatusToKanban' => {}}
-		end 
-		if Setting.plugin_redmine_project_issue_statuses['issueStatusToKanban'] == nil || Setting.plugin_redmine_project_issue_statuses['issueStatusToKanban'] == ""
-		  Setting.plugin_redmine_project_issue_statuses['issueStatusToKanban'] = {}
-		end 
-		if (status.name == "Backlog" || Setting.plugin_redmine_project_issue_statuses['issueStatusToKanban'].has_key?(status.id))
-			if(status.name != "Backlog" && Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'][status.id].respond_to?('include?') && !Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'][status.id].empty? && Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'][status.id].include?(@project.id) && (Setting.plugin_redmine_project_issue_statuses['issueStatusToKanban'][status.id].respond_to?('include?') && Setting.plugin_redmine_project_issue_statuses['issueStatusToKanban'][status.id].include?(@project.id) || Setting.plugin_redmine_project_issue_statuses['issueStatusToKanban'][status.id] == @project.id))
-			%>
-				
-		<%	end
-		else %>
-			<td class="swimlane"><%= h status.name %></td>
-		<% end
-		%>
-	  <% else %>
-		<td class="swimlane"><%= h status.name %></td>
-	  <% end %>
-      <%- end %>
+			<%- @statuses.each do |status| %>
+				<% if(Setting.respond_to? :plugin_redmine_project_issue_statuses) %>
+					<% if Setting.plugin_redmine_project_issue_statuses == nil || Setting.plugin_redmine_project_issue_statuses == ""
+							 Setting.plugin_redmine_project_issue_statuses = {'issueStatusToProject' => {}, 'issueStatusToKanban' => {}}
+						 end
+						 if Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'] == nil || Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'] == ""
+							 Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'] = {}
+						 end
+						 if Setting.plugin_redmine_project_issue_statuses['issueStatusToKanban'] == nil || Setting.plugin_redmine_project_issue_statuses['issueStatusToKanban'] == ""
+							 Setting.plugin_redmine_project_issue_statuses['issueStatusToKanban'] = {}
+						 end
+						 #TODO: This can be cleaned up by reversing the logic
+						 if (status.name == "Backlog" || Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'].has_key?(status.id) || Setting.plugin_redmine_project_issue_statuses['issueStatusToKanban'].has_key?(status.id))
+							 if(status.name != "Backlog" &&
+									 (Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'].has_key?(status.id) && Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'][status.id].respond_to?('include?') && !Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'][status.id].include?(@project.id) ||
+											 (Setting.plugin_redmine_project_issue_statuses['issueStatusToKanban'].has_key?(status.id) && Setting.plugin_redmine_project_issue_statuses['issueStatusToKanban'][status.id].respond_to?('include?') && Setting.plugin_redmine_project_issue_statuses['issueStatusToKanban'][status.id].size > 0 && !(Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'][status.id].respond_to?('include?') && !Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'][status.id].empty? && Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'][status.id].include?(@project.id) && !Setting.plugin_redmine_project_issue_statuses['issueStatusToKanban'][status.id].include?(@project.id)))))
+					%>
+
+						<%
+							elsif status.name != "Backlog"  %>
+							<td class="swimlane"><%= h status.name %></td>
+						<% end
+						%>
+					<% elsif status.name != "Backlog" %>
+						<td class="swimlane"><%= h status.name %></td>
+					<% end %>
+				<% else %>
+					<td class="swimlane"><%= h status.name %></td>
+				<% end %>
+			<%- end %>
     </tr>
   </table>
 
@@ -123,31 +132,42 @@
 					</div>
 					<br style="clear:both;"/>
       </div></td>
-      <%- @statuses.each do |status| %>
-	  <% if(Setting.respond_to? :plugin_redmine_project_issue_statuses) %>
-	  <% if Setting.plugin_redmine_project_issue_statuses == nil || Setting.plugin_redmine_project_issue_statuses == ""
-		  Setting.plugin_redmine_project_issue_statuses = {'issueStatusToKanban' => {}}
-		end 
-		if Setting.plugin_redmine_project_issue_statuses['issueStatusToKanban'] == nil || Setting.plugin_redmine_project_issue_statuses['issueStatusToKanban'] == ""
-		  Setting.plugin_redmine_project_issue_statuses['issueStatusToKanban'] = {}
-		end 
-		if (status.name == "Backlog" || Setting.plugin_redmine_project_issue_statuses['issueStatusToKanban'].has_key?(status.id))
-			if(status.name != "Backlog" && Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'][status.id].respond_to?('include?') && !Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'][status.id].empty? && Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'][status.id].include?(@project.id) && (Setting.plugin_redmine_project_issue_statuses['issueStatusToKanban'][status.id].respond_to?('include?') && Setting.plugin_redmine_project_issue_statuses['issueStatusToKanban'][status.id].include?(@project.id) || Setting.plugin_redmine_project_issue_statuses['issueStatusToKanban'][status.id] == @project.id))
-			%>
-				
-		<%	end
-		else %>
-			<td class="swimlane list <%= status.is_closed? ? 'closed' : '' %>" id="impcell_<%= status.id %>" -rb-status-id="<%= status.id %>" -rb-project-id="impediments">
-				<%= render :partial => "rb_impediments/impediment", :collection => @sprint.impediments.select{|impediment| impediment.status_id==status.id} %>
-			</td>
-		<% end
-		%>
-	  <% else %>
-		<td class="swimlane list <%= status.is_closed? ? 'closed' : '' %>" id="impcell_<%= status.id %>" -rb-status-id="<%= status.id %>" -rb-project-id="impediments">
-				<%= render :partial => "rb_impediments/impediment", :collection => @sprint.impediments.select{|impediment| impediment.status_id==status.id} %>
-			</td>
-	  <% end %>
-      <%- end %>
+			<%- @statuses.each do |status| %>
+				<% if (Setting.respond_to? :plugin_redmine_project_issue_statuses) %>
+					<% if Setting.plugin_redmine_project_issue_statuses == nil || Setting.plugin_redmine_project_issue_statuses == ""
+							 Setting.plugin_redmine_project_issue_statuses = {'issueStatusToProject' => {}, 'issueStatusToKanban' => {}}
+						 end
+						 if Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'] == nil || Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'] == ""
+							 Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'] = {}
+						 end
+						 if Setting.plugin_redmine_project_issue_statuses['issueStatusToKanban'] == nil || Setting.plugin_redmine_project_issue_statuses['issueStatusToKanban'] == ""
+							 Setting.plugin_redmine_project_issue_statuses['issueStatusToKanban'] = {}
+						 end
+						 #TODO: This can be cleaned up by reversing the logic
+						 if (status.name == "Backlog" || Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'].has_key?(status.id) || Setting.plugin_redmine_project_issue_statuses['issueStatusToKanban'].has_key?(status.id))
+							 if (status.name != "Backlog" &&
+									 (Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'].has_key?(status.id) && Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'][status.id].respond_to?('include?') && !Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'][status.id].include?(@project.id) ||
+											 (Setting.plugin_redmine_project_issue_statuses['issueStatusToKanban'].has_key?(status.id) && Setting.plugin_redmine_project_issue_statuses['issueStatusToKanban'][status.id].respond_to?('include?') && Setting.plugin_redmine_project_issue_statuses['issueStatusToKanban'][status.id].size > 0 && !(Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'][status.id].respond_to?('include?') && !Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'][status.id].empty? && Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'][status.id].include?(@project.id) && !Setting.plugin_redmine_project_issue_statuses['issueStatusToKanban'][status.id].include?(@project.id)))))
+					%>
+
+						<%
+							elsif status.name != "Backlog" %>
+							<td class="swimlane list <%= status.is_closed? ? 'closed' : '' %>" id="impcell_<%= status.id %>" -rb-status-id="<%= status.id %>" -rb-project-id="impediments">
+								<%= render :partial => "rb_impediments/impediment", :collection => @sprint.impediments.select {|impediment| impediment.status_id == status.id} %>
+							</td>
+						<% end
+						%>
+					<% elsif status.name != "Backlog" %>
+						<td class="swimlane list <%= status.is_closed? ? 'closed' : '' %>" id="impcell_<%= status.id %>" -rb-status-id="<%= status.id %>" -rb-project-id="impediments">
+							<%= render :partial => "rb_impediments/impediment", :collection => @sprint.impediments.select {|impediment| impediment.status_id == status.id} %>
+						</td>
+					<% end %>
+				<% else %>
+					<td class="swimlane list <%= status.is_closed? ? 'closed' : '' %>" id="impcell_<%= status.id %>" -rb-status-id="<%= status.id %>" -rb-project-id="impediments">
+						<%= render :partial => "rb_impediments/impediment", :collection => @sprint.impediments.select {|impediment| impediment.status_id == status.id} %>
+					</td>
+				<% end %>
+			<%- end %>
     </tr>
   </table>
 
@@ -190,33 +210,43 @@
           <div class="story_points editable" fieldname="story_points" fieldlabel="<%=l(:field_story_points)%>"><%= story.story_points %></div>
         </div>
       </td>
-      <%- @statuses.each do |status| %>
-	  <% if(Setting.respond_to? :plugin_redmine_project_issue_statuses) %>
-	  <% if Setting.plugin_redmine_project_issue_statuses == nil || Setting.plugin_redmine_project_issue_statuses == ""
-		  Setting.plugin_redmine_project_issue_statuses = {'issueStatusToKanban' => {}}
-		end 
-		if Setting.plugin_redmine_project_issue_statuses['issueStatusToKanban'] == nil || Setting.plugin_redmine_project_issue_statuses['issueStatusToKanban'] == ""
-		  Setting.plugin_redmine_project_issue_statuses['issueStatusToKanban'] = {}
-		end 
-		if (status.name == "Backlog" || Setting.plugin_redmine_project_issue_statuses['issueStatusToKanban'].has_key?(status.id))
-			if(status.name != "Backlog" && Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'][status.id].respond_to?('include?') && !Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'][status.id].empty? && Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'][status.id].include?(@project.id) && (Setting.plugin_redmine_project_issue_statuses['issueStatusToKanban'][status.id].respond_to?('include?') && Setting.plugin_redmine_project_issue_statuses['issueStatusToKanban'][status.id].include?(@project.id) || Setting.plugin_redmine_project_issue_statuses['issueStatusToKanban'][status.id] == @project.id))
-			%>
-				
-		<%	end
-		else %>
-			<td class="swimlane list <%= status.is_closed? ? 'closed' : '' %>" id="<%= story.id %>_<%= status.id %>" -rb-status-id="<%= status.id %>" -rb-project-id="<%= story.project.id %>">
-				<%= render_rb_task_collection(story.descendants.select{|task| task.status_id==status.id}) %>
-			  </td>
-		<% end
-		%>
-	   <% else %>
-		<td class="swimlane list <%= status.is_closed? ? 'closed' : '' %>" id="<%= story.id %>_<%= status.id %>" -rb-status-id="<%= status.id %>" -rb-project-id="<%= story.project.id %>">
-				<%= render_rb_task_collection(story.descendants.select{|task| task.status_id==status.id}) %>
-			  </td>
-	  <% end %>
-      <%- end %>
-    </tr>
-    <%- end %>
+			<%- @statuses.each do |status| %>
+				<% if(Setting.respond_to? :plugin_redmine_project_issue_statuses) %>
+					<% if Setting.plugin_redmine_project_issue_statuses == nil || Setting.plugin_redmine_project_issue_statuses == ""
+							 Setting.plugin_redmine_project_issue_statuses = {'issueStatusToProject' => {}, 'issueStatusToKanban' => {}}
+						 end
+						 if Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'] == nil || Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'] == ""
+							 Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'] = {}
+						 end
+						 if Setting.plugin_redmine_project_issue_statuses['issueStatusToKanban'] == nil || Setting.plugin_redmine_project_issue_statuses['issueStatusToKanban'] == ""
+							 Setting.plugin_redmine_project_issue_statuses['issueStatusToKanban'] = {}
+						 end
+						 if (status.name == "Backlog" || Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'].has_key?(status.id) || Setting.plugin_redmine_project_issue_statuses['issueStatusToKanban'].has_key?(status.id))
+							 if(status.name != "Backlog" &&
+									 (Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'].has_key?(status.id) && Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'][status.id].respond_to?('include?') && !Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'][status.id].include?(@project.id) ||
+											 (Setting.plugin_redmine_project_issue_statuses['issueStatusToKanban'].has_key?(status.id) && Setting.plugin_redmine_project_issue_statuses['issueStatusToKanban'][status.id].respond_to?('include?') && Setting.plugin_redmine_project_issue_statuses['issueStatusToKanban'][status.id].size > 0 && !(Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'][status.id].respond_to?('include?') && !Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'][status.id].empty? && Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'][status.id].include?(@project.id) && !Setting.plugin_redmine_project_issue_statuses['issueStatusToKanban'][status.id].include?(@project.id)))))
+					%>
+
+						<%
+							elsif status.name != "Backlog"  %>
+							<td class="swimlane list <%= status.is_closed? ? 'closed' : '' %>" id="<%= story.id %>_<%= status.id %>" -rb-status-id="<%= status.id %>" -rb-project-id="<%= story.project.id %>">
+								<%= render_rb_task_collection(story.descendants.select {|task| task.status_id == status.id}) %>
+							</td>
+						<% end
+						%>
+					<% elsif status.name != "Backlog" %>
+						<td class="swimlane list <%= status.is_closed? ? 'closed' : '' %>" id="<%= story.id %>_<%= status.id %>" -rb-status-id="<%= status.id %>" -rb-project-id="<%= story.project.id %>">
+							<%= render_rb_task_collection(story.descendants.select {|task| task.status_id == status.id}) %>
+						</td>
+					<% end %>
+				<% else %>
+					<td class="swimlane list <%= status.is_closed? ? 'closed' : '' %>" id="<%= story.id %>_<%= status.id %>" -rb-status-id="<%= status.id %>" -rb-project-id="<%= story.project.id %>">
+						<%= render_rb_task_collection(story.descendants.select {|task| task.status_id == status.id}) %>
+					</td>
+				<% end %>
+			<%- end %>
+		</tr>
+		<%- end %>
   </table>
 </div>
 <%- end %>
