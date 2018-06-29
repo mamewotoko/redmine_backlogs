@@ -430,8 +430,9 @@
         versions = projects.map {|p| p.shared_versions.open}.reduce(:&)
 
         priorities = IssuePriority.active.reverse
+        back_url = url_for(:only_path => true)
+        params[:back_url] = back_url
         back = back_url
-
         options_by_custom_field = {}
         if can[:edit]
           custom_fields = issues.map(&:editable_custom_fields).reduce(:&).reject(&:multiple?)
