@@ -11,7 +11,7 @@
   </div>
   <div class="remaining_hours editable" fieldname="remaining_hours" fieldlabel="<%=l(:field_remaining_hours)%>"><%= remaining_hours_or_empty(impediment) %></div>
   <div class="indicator"> </div>
-  <% if User.current.allowed_to?(:log_time, @project) && @settings[:timelog_from_taskboard]=='enabled'  %>
+  <% if User.current.allowed_to?(:log_time, @project) && Backlogs.settings['timelog_from_taskboard']=='enabled'  %>
     <div class="time_entry_hours editable" style="display: none" fieldname="time_entry_hours" fieldlabel="<%=l(:field_time_entry_hours)%>"></div>
     <% if User.current.allowed_to?(:edit_time_entries, @project) %>
       <div class="time_entry_user_id editable" fieldtype="select" fieldname="time_entry_user_id" fieldlabel="<%=l(:field_time_entry_user_id)%>">

@@ -234,7 +234,7 @@ module Backlogs
   end
   module_function :setting
   def settings
-    SettingsProxy.instance.to_h
+	  SettingsProxy.instance.to_h
   end
   module_function :settings
 end

@@ -25,7 +25,7 @@ group :test do
   gem 'cucumber-rails', require: false
   gem "culerity"
   gem "cucumber"
-  gem "capybara"
+  gem "capybara", '~> 2.13'
   #gem "faye-websocket"
   gem "poltergeist"
   gem "database_cleaner"
