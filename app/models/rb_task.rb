@@ -113,7 +113,7 @@ class RbTask < Issue
     scope.where(["updated_on > ?
                   AND tracker_id in (?)
                   AND parent_id IS #{ find_impediments ? '' : 'NOT' } NULL",
-                 Time.parse(since), tracker]).
+                 Time.parse(since), trackers]).
         order("updated_on ASC")
   end
 
