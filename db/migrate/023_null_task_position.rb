@@ -1,12 +1,12 @@
 require 'benchmark'
 
-class NullTaskPosition < ActiveRecord::Migration
+class NullTaskPosition < ActiveRecord::Migration[4.2]
   def self.up
-    if RbTask.tracker
-      execute "update issues set position = null where tracker_id = #{RbTask.tracker}"
+    if RbTask.trackers && RbTask.trackers.size > 0
+      execute "update issues set position = null where tracker_id in (#{RbTask.trackers(:type=>:string)})"
     end
 
-    if RbTask.tracker && RbStory.trackers.size > 0
+    if RbTask.trackers && RbTask.trackers.size > 0 && RbStory.trackers.size > 0
       create_table :backlogs_tmp_set_task_tracker do |t|
         t.column :story_root_id, :integer, :null => false
         t.column :story_lft, :integer, :null => false

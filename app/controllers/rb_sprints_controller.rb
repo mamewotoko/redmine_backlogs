@@ -12,7 +12,7 @@ class RbSprintsController < RbApplicationController
 
   def create
     attribs = params.select{|k,v| k != 'id' and RbSprint.column_names.include? k }
-    attribs = Hash[*attribs.flatten]
+    attribs = Hash[*attribs.to_unsafe_h.flatten] #TODO: permit once we use strong parameters instead of protected attributes, and just use to_h
     @sprint = RbSprint.new(attribs)
 
     #share the sprint according to the global setting

@@ -6,9 +6,11 @@ version_file = IO.read(redmine_version_file)
 redmine_version_minor = version_file.match(/MINOR =/).post_match.match(/\d/)[0].to_i
 redmine_version_major = version_file.match(/MAJOR =/).post_match.match(/\d/)[0].to_i
 
+gem 'alias_method_chain', '~> 1.0' #temporary
+gem 'protected_attributes_continued' #temporary
+gem 'erubis', '~> 2.7'
 gem "holidays", "~>1.0.3"
 gem "icalendar"
-gem "nokogiri", "~>1.8.1"
 gem "open-uri-cached"
 gem "prawn"
 gem 'json'

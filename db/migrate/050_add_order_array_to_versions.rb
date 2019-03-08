@@ -1,4 +1,4 @@
-class AddOrderArrayToVersions < ActiveRecord::Migration
+class AddOrderArrayToVersions < ActiveRecord::Migration[4.2]
   def self.up
     unless ActiveRecord::Base.connection.column_exists?(:versions, :orderArray)
       add_column :versions, :orderArray, :text

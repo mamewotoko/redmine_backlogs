@@ -4,7 +4,7 @@ require 'json'
 class RbKanbanController < RbApplicationController
   unloadable
   
-  before_filter :authorize, :except=>[:order]
+  before_action :authorize, :except=>[:order]
   
   def order
 	@sprint.orderArray = JSON.parse(params[:orderArray])

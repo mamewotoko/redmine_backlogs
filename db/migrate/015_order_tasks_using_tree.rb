@@ -1,4 +1,4 @@
-class OrderTasksUsingTree < ActiveRecord::Migration
+class OrderTasksUsingTree < ActiveRecord::Migration[4.2]
   def self.up
     unless ActiveRecord::Base.connection.table_exists?('rb_issue_history')
       create_table :rb_issue_history do |t|
@@ -19,9 +19,9 @@ class OrderTasksUsingTree < ActiveRecord::Migration
     end
 
     last_task = {}
-    if RbTask.tracker
+    if RbTask.trackers && RbTask.trackers.size > 0
       ActiveRecord::Base.transaction do
-        RbTask.where(tracker_id: RbTask.tracker).order("project_id ASC, parent_id ASC, position ASC").find_each do |t|
+        RbTask.where(tracker_id: RbTask.trackers.map(&:id)).order("project_id ASC, parent_id ASC, position ASC").find_each do |t|
           begin
             t.move_after last_task[t.parent_id] if last_task[t.parent_id]
           rescue
