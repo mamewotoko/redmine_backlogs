@@ -77,7 +77,7 @@ class RbTask < Issue
       end
     end
 
-    task = new(attribs)
+    task = new(attribs.to_unsafe_h) #TODO: Permit instead of unsafe_h
     if  params.has_key?('parent_issue_id') && params['parent_issue_id'] && !params['conditions'].empty?
       parent = Issue.find(params['parent_issue_id'])
       task.start_date = parent.start_date
@@ -136,7 +136,7 @@ class RbTask < Issue
                             true
                           end
 
-      if valid_relationships && result = self.journalized_update_attributes!(attribs)
+      if valid_relationships && result = self.journalized_update_attributes!(attribs.to_unsafe_h) #TODO: Permit and to_h instead of unsafe_h
       move_before params[:next] unless is_impediment # impediments are not hosted under a single parent, so you can't tree-order them
       update_blocked_list params[:blocks].split(/\D+/) if params[:blocks]
 

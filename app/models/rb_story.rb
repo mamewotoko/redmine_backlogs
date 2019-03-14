@@ -175,7 +175,7 @@ class RbStory < Issue
     attribs = params.select{|k,v| !['prev', 'next', 'id', 'lft', 'rgt'].include?(k) && RbStory.column_names.include?(k) }
 
     attribs[:status] = RbStory.class_default_status
-    attribs = Hash[*attribs.flatten]
+    attribs = Hash[*attribs.to_unsafe_h.flatten] #TODO: Permit instead of unsafe.
     s = RbStory.new(attribs)
     if params['fixed_version_id'] && params['fixed_version_id'] != ""
       sprint = RbSprint.find(params['fixed_version_id'])
@@ -301,11 +301,10 @@ class RbStory < Issue
   end
 
   def save_release_burnchart_data(series,release_burndown_id)
-    RbReleaseBurnchartDayCache.delete_all(
-      ["issue_id = ? AND release_id = ? AND day IN (?)",
-       self.id,
-       release_burndown_id,
-       series.series(:day)])
+    RbReleaseBurnchartDayCache.where(["issue_id = ? AND release_id = ? AND day IN (?)",
+                                      self.id,
+                                      release_burndown_id,
+                                      series.series(:day)]).delete_all()
 
     series.each{|s|
       RbReleaseBurnchartDayCache.create(:issue_id => self.id,
