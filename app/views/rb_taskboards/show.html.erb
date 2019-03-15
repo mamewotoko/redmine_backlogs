@@ -92,10 +92,14 @@
 							 Setting.plugin_redmine_project_issue_statuses['issueStatusToKanban'] = {}
 						 end
 						 #TODO: This can be cleaned up by reversing the logic
-						 if (status.name == "Backlog" || Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'].has_key?(status.id) || Setting.plugin_redmine_project_issue_statuses['issueStatusToKanban'].has_key?(status.id))
+						 if (status.name == "Backlog" || status.is_a?(ProjectIssueStatus) || Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'].has_key?(status.id) || Setting.plugin_redmine_project_issue_statuses['issueStatusToKanban'].has_key?(status.id))
 							 if(status.name != "Backlog" &&
-									 (Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'].has_key?(status.id) && Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'][status.id].respond_to?('include?') && !Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'][status.id].include?(@project.id) ||
-											 (Setting.plugin_redmine_project_issue_statuses['issueStatusToKanban'].has_key?(status.id) && Setting.plugin_redmine_project_issue_statuses['issueStatusToKanban'][status.id].respond_to?('include?') && Setting.plugin_redmine_project_issue_statuses['issueStatusToKanban'][status.id].size > 0 && !(Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'][status.id].respond_to?('include?') && !Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'][status.id].empty? && Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'][status.id].include?(@project.id) && !Setting.plugin_redmine_project_issue_statuses['issueStatusToKanban'][status.id].include?(@project.id)))))
+									 (
+                   status.is_a?(ProjectIssueStatus) && !status.visible_in?(@project) ||
+                   status.is_a?(ProjectIssueStatus) && status.is_kanban? ||
+                   Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'].has_key?(status.id) && Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'][status.id].respond_to?('include?') && !Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'][status.id].include?(@project.id) ||
+											 (Setting.plugin_redmine_project_issue_statuses['issueStatusToKanban'].has_key?(status.id) && Setting.plugin_redmine_project_issue_statuses['issueStatusToKanban'][status.id].respond_to?('include?') && Setting.plugin_redmine_project_issue_statuses['issueStatusToKanban'][status.id].size > 0 && !(Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'][status.id].respond_to?('include?') && !Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'][status.id].empty? && Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'][status.id].include?(@project.id) && !Setting.plugin_redmine_project_issue_statuses['issueStatusToKanban'][status.id].include?(@project.id)))
+                   ))
 					%>
 
 						<%
@@ -144,10 +148,14 @@
 							 Setting.plugin_redmine_project_issue_statuses['issueStatusToKanban'] = {}
 						 end
 						 #TODO: This can be cleaned up by reversing the logic
-						 if (status.name == "Backlog" || Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'].has_key?(status.id) || Setting.plugin_redmine_project_issue_statuses['issueStatusToKanban'].has_key?(status.id))
-							 if (status.name != "Backlog" &&
-									 (Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'].has_key?(status.id) && Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'][status.id].respond_to?('include?') && !Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'][status.id].include?(@project.id) ||
-											 (Setting.plugin_redmine_project_issue_statuses['issueStatusToKanban'].has_key?(status.id) && Setting.plugin_redmine_project_issue_statuses['issueStatusToKanban'][status.id].respond_to?('include?') && Setting.plugin_redmine_project_issue_statuses['issueStatusToKanban'][status.id].size > 0 && !(Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'][status.id].respond_to?('include?') && !Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'][status.id].empty? && Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'][status.id].include?(@project.id) && !Setting.plugin_redmine_project_issue_statuses['issueStatusToKanban'][status.id].include?(@project.id)))))
+						 if (status.name == "Backlog" || status.is_a?(ProjectIssueStatus) || Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'].has_key?(status.id) || Setting.plugin_redmine_project_issue_statuses['issueStatusToKanban'].has_key?(status.id))
+               if(status.name != "Backlog" &&
+                   (
+                   status.is_a?(ProjectIssueStatus) && !status.visible_in?(@project) ||
+                       status.is_a?(ProjectIssueStatus) && status.is_kanban? ||
+                       Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'].has_key?(status.id) && Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'][status.id].respond_to?('include?') && !Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'][status.id].include?(@project.id) ||
+                       (Setting.plugin_redmine_project_issue_statuses['issueStatusToKanban'].has_key?(status.id) && Setting.plugin_redmine_project_issue_statuses['issueStatusToKanban'][status.id].respond_to?('include?') && Setting.plugin_redmine_project_issue_statuses['issueStatusToKanban'][status.id].size > 0 && !(Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'][status.id].respond_to?('include?') && !Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'][status.id].empty? && Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'][status.id].include?(@project.id) && !Setting.plugin_redmine_project_issue_statuses['issueStatusToKanban'][status.id].include?(@project.id)))
+                   ))
 					%>
 
 						<%
@@ -221,10 +229,14 @@
 						 if Setting.plugin_redmine_project_issue_statuses['issueStatusToKanban'] == nil || Setting.plugin_redmine_project_issue_statuses['issueStatusToKanban'] == ""
 							 Setting.plugin_redmine_project_issue_statuses['issueStatusToKanban'] = {}
 						 end
-						 if (status.name == "Backlog" || Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'].has_key?(status.id) || Setting.plugin_redmine_project_issue_statuses['issueStatusToKanban'].has_key?(status.id))
-							 if(status.name != "Backlog" &&
-									 (Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'].has_key?(status.id) && Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'][status.id].respond_to?('include?') && !Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'][status.id].include?(@project.id) ||
-											 (Setting.plugin_redmine_project_issue_statuses['issueStatusToKanban'].has_key?(status.id) && Setting.plugin_redmine_project_issue_statuses['issueStatusToKanban'][status.id].respond_to?('include?') && Setting.plugin_redmine_project_issue_statuses['issueStatusToKanban'][status.id].size > 0 && !(Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'][status.id].respond_to?('include?') && !Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'][status.id].empty? && Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'][status.id].include?(@project.id) && !Setting.plugin_redmine_project_issue_statuses['issueStatusToKanban'][status.id].include?(@project.id)))))
+						 if (status.name == "Backlog"|| status.is_a?(ProjectIssueStatus) || Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'].has_key?(status.id) || Setting.plugin_redmine_project_issue_statuses['issueStatusToKanban'].has_key?(status.id))
+               if(status.name != "Backlog" &&
+                   (
+                   status.is_a?(ProjectIssueStatus) && !status.visible_in?(@project) ||
+                       status.is_a?(ProjectIssueStatus) && status.is_kanban? ||
+                       Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'].has_key?(status.id) && Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'][status.id].respond_to?('include?') && !Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'][status.id].include?(@project.id) ||
+                       (Setting.plugin_redmine_project_issue_statuses['issueStatusToKanban'].has_key?(status.id) && Setting.plugin_redmine_project_issue_statuses['issueStatusToKanban'][status.id].respond_to?('include?') && Setting.plugin_redmine_project_issue_statuses['issueStatusToKanban'][status.id].size > 0 && !(Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'][status.id].respond_to?('include?') && !Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'][status.id].empty? && Setting.plugin_redmine_project_issue_statuses['issueStatusToProject'][status.id].include?(@project.id) && !Setting.plugin_redmine_project_issue_statuses['issueStatusToKanban'][status.id].include?(@project.id)))
+                   ))
 					%>
 
 						<%
