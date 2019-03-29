@@ -51,42 +51,40 @@ module Backlogs
 
       def available_filters_with_backlogs_issue_type
         @available_filters = available_filters_without_backlogs_issue_type
-        IssueStatus.all
-        #TODO: Readd backlog_issue_type as a QueryFilter
-        # return @available_filters if !show_backlogs_issue_items?(project)
-        #
-        # if RbStory.trackers.length == 0 or RbTask.trackers.blank?
-        #   backlogs_filters = { }
-        # else
-        #   backlogs_filters = {
-        #     # mother of *&@&^*@^*#.... order "20" is a magical constant in RM2.2 which means "I'm a custom field". What. The. Fuck.
-        #     "backlogs_issue_type" => {  :type => :list,
-        #                                 :name => l(:field_backlogs_issue_type),
-        #                                 :values => [[l(:backlogs_story), "story"], [l(:backlogs_task), "task"], [l(:backlogs_impediment), "impediment"], [l(:backlogs_any), "any"]],
-        #                                 :order => 21 },
-        #     "story_points" => { :type => :float,
-        #                         :name => l(:field_story_points),
-        #                         :order => 22 }
-        #                      }
-        # end
-        #
-        # if project
-        #   backlogs_filters["release_id"] = {
-        #     :type => :list_optional,
-        #     :name => l(:field_release),
-        #     :values => RbRelease.where(project_id: project).order('name ASC').collect { |d| [d.name, d.id.to_s]},
-        #     :order => 23
-        #   }
-        # end
-        #
-        # if (Redmine::VERSION::MAJOR == 3 && Redmine::VERSION::MINOR >= 4)
-        #   backlogs_filters.each do |field, filter|
-        #     options = {:type => filter[:type], :name => filter[:name], :values => filter[:values]}
-        #     add_available_filter(field, options)
-        #   end
-        # else
-        #   @available_filters = @available_filters.merge(backlogs_filters)
-        # end
+        return @available_filters if !show_backlogs_issue_items?(project)
+
+        if RbStory.trackers.length == 0 or RbTask.trackers.blank?
+          backlogs_filters = { }
+        else
+          backlogs_filters = {
+            # mother of *&@&^*@^*#.... order "20" is a magical constant in RM2.2 which means "I'm a custom field". What. The. Fuck.
+            "backlogs_issue_type" => {  :type => :list,
+                                        :name => l(:field_backlogs_issue_type),
+                                        :values => [[l(:backlogs_story), "story"], [l(:backlogs_task), "task"], [l(:backlogs_impediment), "impediment"], [l(:backlogs_any), "any"]],
+                                        :order => 21 },
+            "story_points" => { :type => :float,
+                                :name => l(:field_story_points),
+                                :order => 22 }
+                             }
+        end
+
+        if project
+          backlogs_filters["release_id"] = {
+            :type => :list_optional,
+            :name => l(:field_release),
+            :values => RbRelease.where(project_id: project).order('name ASC').collect { |d| [d.name, d.id.to_s]},
+            :order => 23
+          }
+        end
+
+        if (Redmine::VERSION::MAJOR >= 4 || Redmine::VERSION::MAJOR == 3 && Redmine::VERSION::MINOR >= 4)
+          backlogs_filters.each do |field, filter|
+            options = {:type => filter[:type], :name => filter[:name], :values => filter[:values]}
+            add_available_filter(field, options)
+          end
+        else
+          @available_filters = @available_filters.merge(backlogs_filters)
+        end
         @available_filters
       end
       

@@ -199,6 +199,80 @@
       var windowWidth;
       var windowHeight;
 
+      function contextMenuCreate() {
+          if ($('#context-menu').length < 1) {
+              var menu = document.createElement("div");
+              menu.setAttribute("id", "context-menu");
+              menu.setAttribute("style", "display:none;");
+              document.getElementById("content").appendChild(menu);
+          }
+      }
+      
+      function window_size() {
+          var w;
+          var h;
+          if (window.innerWidth) {
+              w = window.innerWidth;
+              h = window.innerHeight;
+          } else if (document.documentElement) {
+              w = document.documentElement.clientWidth;
+              h = document.documentElement.clientHeight;
+          } else {
+              w = document.body.clientWidth;
+              h = document.body.clientHeight;
+          }
+          return {width: w, height: h};
+      }
+
+      function contextMenuShow(event) {
+          var mouse_x = event.pageX;
+          var mouse_y = event.pageY;
+          var mouse_y_c = event.clientY;
+          var render_x = mouse_x;
+          var render_y = mouse_y;
+          var dims;
+          var menu_width;
+          var menu_height;
+          var window_width;
+          var window_height;
+          var max_width;
+          var max_height;
+          var url;
+
+          var ws = window_size();
+          window_width = ws.width;
+          window_height = ws.height;
+
+          /* display the menu above and/or to the left of the click if needed */
+          if (max_width > window_width) {
+              render_x -= menu_width;
+              $('#context-menu').addClass('reverse-x');
+          } else {
+              $('#context-menu').removeClass('reverse-x');
+          }
+
+          if (max_height > window_height) {
+              render_y -= menu_height;
+              $('#context-menu').addClass('reverse-y');
+              // adding class for submenu
+              if (mouse_y_c < 325) {
+                  $('#context-menu .folder').addClass('down');
+              }
+          } else {
+              // adding class for submenu
+              if (window_height - mouse_y_c < 345) {
+                  $('#context-menu .folder').addClass('up');
+              }
+              $('#context-menu').removeClass('reverse-y');
+          }
+
+          if (render_x <= 0) render_x = 1;
+          if (render_y <= 0) render_y = 1;
+          $('#context-menu').css('left', (render_x + 'px'));
+          $('#context-menu').css('top', (render_y + 'px'));
+          toggleMenuOn();
+      }
+
       /**
        * Turns the custom context menu on.
        */
@@ -312,8 +386,8 @@
           if (taskItemInContext)
           {
             e.preventDefault();
-            toggleMenuOn();
-            positionMenu(e);
+            contextMenuCreate();
+            contextMenuShow(e);
           }
           else
           {
@@ -404,8 +478,6 @@
           end
         end
     %>
-    <div id="context-menu" class="reverse-x" style="left:0;top:0;display: none;">
-    </div>
     <%
       stories.each do |story|
         issues = [story]
@@ -447,7 +519,7 @@
         safe_attributes = issues.map(&:safe_attribute_names).reduce(:&)
 
     %>
-        <div id="context-menu-story_<%=story.id%>" class="reverse-x" style="left:0;top:0;display: none;">
+        <div id="context-menu-story_<%=story.id%>" style="left:0;top:0;display: none;">
         <ul>
         <% if issue -%>
             <li><%= context_menu_link l(:button_edit), edit_issue_path(issue),
