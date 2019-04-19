@@ -1,37 +1,7 @@
 <% if !IssueStatus.exists?(name: 'Backlog')
 	IssueStatus.create(name: 'Backlog')
 end %>
-<!-- TASKBOARD VIEW -->
-<%# early javascript before common.hs %>
-<%- controller.rb_jquery_plugins = capture do %>
-  <%= javascript_include_tag(
-          'jquery/jquery.multiselect.js', 'jquery/jquery.qtip.pack.js', 'jquery/jquery.qtip.setup.js',
-          :plugin => 'redmine_backlogs')
-  %>
-<%- end %>
-<% content_for :head_tags do %>
-  <%= javascript_include_tag(
-          'show_main', 'board_updater', 'taskboard_updater', 'taskboard', 'model', 'issue', 'task', 'impediment',
-          :plugin => 'redmine_backlogs')
-  %>
-  <%= stylesheet_link_tag 'jquery/jquery.qtip.css', :plugin => 'redmine_backlogs' %>
-  <%= stylesheet_link_tag 'jquery/jquery.multiselect.css', :plugin => 'redmine_backlogs' %>
-  <%= stylesheet_link_tag 'taskboard.css', :plugin => 'redmine_backlogs', :media => 'print,screen' %>
-  <%= stylesheet_link_tag 'taskboard_print.css', :plugin => 'redmine_backlogs', :media => 'print' %>
 
-  <script type="text/javascript"
-          src="<%= url_for(:controller => 'rb_server_variables',
-                           :action => 'sprint', :sprint_id => @sprint.id,
-                           :context => 'taskboard',
-                           :format => 'js') %>">
-  </script>
-  <%# Usability: display default cursor if tasks cannot be dragged %>
-  <% unless User.current.allowed_to?(:update_tasks, @project) && @sprint.open? %>
-    <style type="text/css">
-      #taskboard .issue{cursor:default;}
-    </style>
-  <% end %>
-<% end %>
 <% if(Setting.respond_to? :plugin_redmine_project_issue_statuses) %>
 <!-- KANBAN VIEW -->
 <%# early javascript before common.hs %>
@@ -43,7 +13,7 @@ end %>
 <%- end %>
 <% content_for :head_tags do %>
   <%= javascript_include_tag(
-          'show_main', 'board_updater', 'kanban_updater', 'kanban', 'model', 'issue', 'task', 'impediment',
+          'show_main_kanban', 'board_updater', 'kanban_updater', 'kanban', 'model', 'issue', 'task', 'impediment',
           :plugin => 'redmine_backlogs')
   %>
     <%= stylesheet_link_tag 'jquery/jquery.qtip.css', :plugin => 'redmine_backlogs' %>
