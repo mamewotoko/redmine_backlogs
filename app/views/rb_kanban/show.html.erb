@@ -119,14 +119,22 @@ end %>
              Setting.plugin_redmine_project_issue_statuses['issueStatusToKanban'].has_key?(status.id) && Setting.plugin_redmine_project_issue_statuses['issueStatusToKanban'][status.id].respond_to?('include?') && Setting.plugin_redmine_project_issue_statuses['issueStatusToKanban'][status.id].include?(@project.id)
              ))
 		%>
-				<td class="swimlane swimhead <%= status.id %>" id="<%= status.id %>"><%= h status.name %></td>
+				<td class="swimlane swimhead <%= status.id %>" id="<%= status.id %>"><%= h status.name %> <%= link_to(
+                                                                                                         "",
+                                                                                                         {},#{:action => 'edit', :id => status.id},
+                                                                                                         :class => 'icon icon-edit'
+                                                                                                     ) if status.is_a?(ProjectIssueStatus) && User.current.allowed_to?(:configure_project_issue_statuses, nil, :global=>true)%> <%= link_to("",
+                                                                                                                                                                                                                                            {},#{:action => 'delete', :id => status.id},
+                                                                                                                                                                                                                                            :class => 'icon icon-del',
+                                                                                                                                                                                                                                            data: { confirm: "Are you sure you want to delete #{status.name}?" }
+                                                                                                                                                                                                                                            ) if status.is_a?(ProjectIssueStatus) && User.current.allowed_to?(:configure_project_issue_statuses, nil, :global=>true)%></td>
 		<%	end
 		%>
 		<% end
 		%>
 	  
 	  <% else %>
-		<td class="swimlane swimhead <%= status.id %>"><%= h status.name %></td>
+    <td class="swimlane swimhead <%= status.id %>"><%= h status.name %></td>
 	  <% end %>
       <%- end %>
     </tr>
