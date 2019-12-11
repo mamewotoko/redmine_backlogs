@@ -14,9 +14,13 @@ gem "icalendar"
 gem "open-uri-cached"
 gem "prawn"
 gem 'json'
+gem 'sidekiq'
 
 group :development do
-  gem "inifile"
+  source 'https://rubygems.org' do
+    gem "octokit", "~> 4.0"
+  end
+   gem "inifile"
 end
 
 group :test do
