@@ -8,7 +8,8 @@ redmine_version_major = version_file.match(/MAJOR =/).post_match.match(/\d/)[0].
 
 gem "holidays", "< 3.0.0"
 gem "icalendar"
-gem "nokogiri", ">= 1.6.7.2"
+# XXX "Bundler cannot continue." because nokogiri is specified twice
+#gem "nokogiri", ">= 1.6.7.2"
 gem "open-uri-cached"
 gem "prawn"
 gem 'json'
