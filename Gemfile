@@ -14,10 +14,12 @@ gem "open-uri-cached"
 gem "prawn"
 gem 'json'
 gem 'sidekiq'
+gem 'octokit'
+gem 'inifile'
 
-group :development do
-  gem "inifile"
-end
+# group :development do
+#   gem "inifile"
+# end
 
 group :test do
   gem 'chronic'
