@@ -125,3 +125,7 @@ ul.ui-sortable {
 #project_quick_jump_box{
   max-width: 300px;
 }
+
+/* added for redmine 4.1.0 */
+#sidebar { display: none !important; }
+#content { width: 100% !important; }
