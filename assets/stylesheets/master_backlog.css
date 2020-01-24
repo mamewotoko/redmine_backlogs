@@ -24,13 +24,13 @@
    position: relative;
    float: left;
    left: 0.00%;
-   width: 50.00%;
+   width: 48.00% !important;
 }
 #backlogs_container .right-col{
    position: relative;
    float: right;
    right: 0.00%;
-   width: 50.00%;
+   width: 48.00% !important;
 }
 #backlogs_container .backlogs-panel-inner {
   padding: 4px;
