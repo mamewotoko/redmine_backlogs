@@ -5,6 +5,12 @@
   <%- end %>
 </select>
 
+<select class="assigned_to_id helper" id="assigned_to_id_options">
+  <%- Principal.member_of(@project).each do |member| %>
+  <option value="<%= member.id %>"><%= h member.name %></option>
+  <%- end %>
+</select>
+
 <%- unless Backlogs.setting[:story_points].blank? -%>
 <select class="story_points helper" id="story_points_options">
 	<%- (['']+Backlogs.setting[:story_points].split(/,/).collect(&:to_f)).each do |point| %>
