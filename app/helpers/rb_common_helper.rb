@@ -79,7 +79,8 @@ filter:progid:DXImageTransform.Microsoft.Gradient(Enabled=1,GradientType=0,Start
   end
 
   def story_points_or_empty(story)
-    story.story_points.blank? ? "" : story.story_points
+    # TODO: config (float support or int only)
+    story.story_points.blank? ? "" : story.story_points.to_i
   end
 
   def record_id_or_empty(story)
