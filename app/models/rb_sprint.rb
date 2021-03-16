@@ -99,7 +99,14 @@ class RbSprint < Version
       if template
       page = WikiPage.new(:wiki => project.wiki, :title => self.wiki_page_title)
       page.content = WikiContent.new
-      page.content.text = "h1. #{self.name}\n\n#{template.text}"
+      formatting = Setting.text_formatting
+      if formatting == "textile"
+        page.content.text = "h1. #{self.name}\n\n#{template.text}"
+      elsif formatting == "markdown" or formatting == "pandoc"
+        page.content.text = "# #{self.name}\n\n#{template.text}"
+      else
+        page.content.text = "#{self.name}\n\n#{template.text}"
+      end
       page.save!
       end
     end
