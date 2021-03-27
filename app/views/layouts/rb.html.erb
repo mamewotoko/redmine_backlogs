@@ -5,6 +5,13 @@
    <meta name="viewport" content="width=device-width" />
 <meta name="description" content="Redmine Backlogs" />
 <meta name="keywords" content="issue,bug,tracker,scrum,agile,plugin" />
+<%=
+  javascript_include_tag 'jquery-ui-bootstrap/jquery-1.9.0.min.js',
+  'jquery-ui-bootstrap/jquery-ui-1.10.0.custom.min.js',
+  'jquery-ui-bootstrap/bootstrap.min.js',
+  :plugin => 'redmine_backlogs'
+%>
+
 <%= csrf_meta_tag %>
 <%= favicon %>
 
@@ -13,12 +20,24 @@
 <%= stylesheet_link_tag 'rtl', :media => 'all' if l(:direction) == 'rtl' %>
 <% end %>
 
-<%= javascript_include_tag 'jquery/jquery-1.7.2-ui-1.8.21-ujs-2.0.3.js', :plugin => 'redmine_backlogs' %>
+<%=
+#  javascript_include_tag 'jquery/jquery-1.7.2-ui-1.8.21-ujs-2.0.3.js', :plugin => 'redmine_backlogs'
+%>
+<%=
+  # javascript_include_tag 'bootstrap.min.js', :plugin => 'redmine_backlogs'
+%>
+
+<%= stylesheet_link_tag 'jquery-ui-bootstrap/bootstrap.min.css',
+    'jquery-ui-bootstrap/font-awesome.min.css',
+    :plugin => 'redmine_backlogs',
+:media => 'all' %>
 
 <%= call_hook :view_layouts_base_html_head %>
 
 <%= stylesheet_link_tag 'global.css', 'jquery/jquery-ui.css', :plugin => 'redmine_backlogs', :media => 'print,screen' %>
 <%= stylesheet_link_tag 'global_print.css', :plugin => 'redmine_backlogs', :media => 'print' %>
+#  stylesheet_link_tag 'bootstrap.min.css', :plugin => 'redmine_backlogs', :media => 'print,screen'
+%>
 
 <%= yield :head_tags -%>
 
