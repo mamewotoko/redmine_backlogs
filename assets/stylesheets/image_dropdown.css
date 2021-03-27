@@ -1,0 +1,24 @@
+<style>
+.dropdown {
+    height: 28px;
+}
+.dropdown-img {
+    max-height: 24px;
+}
+.dropdown-toggle {
+    position: relative;
+    width: 200px;
+    height: 26px;
+    margin: 2px;
+}
+.dropdown-item, .dropdown-toggle {
+    height: 48px;
+    padding: 2px;
+    text-align: left;
+}
+.dropdown-toggle::after {
+    position: absolute;
+    right: 5px;
+    top: 22px;
+}
+</style>

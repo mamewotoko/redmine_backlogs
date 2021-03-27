@@ -7,7 +7,8 @@
 
 <select class="assigned_to_id helper image-dropdown" id="assigned_to_id_options">
   <!-- nobody -->
-  <option value style="display: none;">&nbsp;</option>
+  <!-- translate -->
+  <option value style="display: none;">nobody</option>
   <%- Principal.member_of(@project).each do |member| %>
   <!-- TODO: check avatar is available or not -->
   <%- avatar = Nokogiri::HTML.parse(avatar(member)) %>
