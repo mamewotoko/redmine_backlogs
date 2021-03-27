@@ -5,6 +5,83 @@
   mostly about editing these.
 ***************************************/
 
+function convert_dropdown(target){
+    var topoftop = $("<div/>", { class: "dropdown"});
+    
+    function update_dropdown(ui){
+        var visibleItem = $(topoftop).find('.dropdown-visible');
+        visibleItem.html(ui.html());
+        
+        //change original select
+        console.log("val", $(ui).attr('data-value'));
+        $(target).val($(ui).attr('data-value'));
+    }
+    function dropdown_get_value(element){
+        return element.find('.dropdown-selected').attr("data-value");
+    }
+    function initialize_dropdown(element){
+        update_dropdown(element.find('.dropdown-menu .dropdown-item'));
+        element.find(".dropdown-menu .dropdown-item").click(function(){
+            element.find(".dropdown-menu").find(".dropdown-selected").removeClass("dropdown-selected");
+            element.find(".dropdown-menu").find(".dropdown-toggle").removeClass("dropdown-toggle");
+            $(this).addClass("dropdown-selected");
+            $(this).addClass("dropdown-toggle");
+            update_dropdown($(this));
+        });
+    }
+    
+    var top_button = $("<button>", {type: "button",
+                                    class: "btn dropdown-toggle dropdown-visible",
+                                    "data-toggle": "dropdown",
+                                    "aria-haspopup": "true",
+                                    "aria-expanded": "false"});
+    $(topoftop).append(top_button);
+    
+    var top = $("<ul>", {class: "dropdown-menu"});
+    $(topoftop).append(top);
+    $(target).find("option").each(function(i, e){
+        console.log(e);
+        var list = $("<li/>");
+        var cls = "dropdown-item";
+        if($(e).attr("selected")){
+            cls = cls + " dropdown-selected";
+        }
+        var button = $("<button/>").attr({
+            class: cls,
+            "data-value": $(e).attr("value"),
+            "data-orig-index": i,
+            width: "190px"
+        });
+        list.append(button);
+        if($(e).attr("data-img")){
+            $(button).append($("<img>", {class: "dropdown-img"}).attr("src", $(e).attr("data-img")));
+        }
+        $(button).append($(e).text());
+        $(button).click(function(e){
+            e.preventDefault();
+            //write click handler
+            $(top).find(".dropdown-selected").removeClass("dropdown-selected");
+            $(top).find(".dropdown-toggle").removeClass("dropdown-toggle");
+            $(this).addClass("dropdown-selected");
+            $(this).addClass("dropdown-toggle");
+            update_dropdown($(this));
+            console.log(dropdown_get_value($(topoftop)));
+        });
+        $(top).append(list);
+    });
+    //$(target).parent().append(topoftop);
+    initialize_dropdown($(topoftop));
+    return topoftop;
+}
+
+// $(".image-dropdown").each(function(i, e){
+//     var topoftop = convert_dropdown(e);
+//     $(topoftop).css("display", "inline-block");
+//     $(this).css("display", "none");
+//     $(topoftop).insertBefore($(this));
+// });
+
+
 RB.Model = RB.Object.create({
 
   initialize: function(el){
@@ -85,60 +162,72 @@ RB.Model = RB.Object.create({
     var self = this;
     
     this.$.find('.editable').each(function(index){
-      var field = RB.$(this);
-      var fieldType = field.attr('fieldtype') ? field.attr('fieldtype') : 'input';
-      var fieldName = field.attr('fieldname');
-      var fieldLabel = field.attr('fieldlabel');
-      var input;
-      
-      RB.$(document.createElement("label")).text(fieldLabel).appendTo(editor);
-      input = fieldType=='select' ? RB.$('#' + fieldName + '_options').clone(true) : RB.$(document.createElement(fieldType));
-      input.removeAttr('id');
-      input.attr('name', fieldName);
-      input.addClass(fieldName);
-      input.addClass('editor');
-      input.removeClass('template');
-      input.removeClass('helper');
-      input.attr('_rb_width', field.width());
-      // Add a date picker if field is a date field
-      if (field.hasClass("date")){
-        input.datepicker({ changeMonth: true,
-                           changeYear: true,
-                           closeText: 'Close',
-                           dateFormat: 'yy-mm-dd', 
-                           firstDay: 1,
-                           onClose: function(){ RB.$(this).focus(); },
-                           selectOtherMonths: true,
-                           showAnim:'',
-                           showButtonPanel: true,
-                           showOtherMonths: true
-                       });
-        // So that we won't need a datepicker button to re-show it
-        input.bind('mouseup', function(event){ RB.$(this).datepicker("show"); });
-      }
-      
-      // Copy the value in the field to the input element
-      value = ( fieldType=='select' ? field.children('.v').first().text() : RB.$.trim(field.text()) );
+        var field = RB.$(this);
+        var fieldType = field.attr('fieldtype') ? field.attr('fieldtype') : 'input';
+        var fieldName = field.attr('fieldname');
+        var fieldLabel = field.attr('fieldlabel');
+        var field_image = field.attr('data-img');
+        var input;
+        
+        RB.$(document.createElement("label")).text(fieldLabel).appendTo(editor);
+        input = fieldType=='select' ? RB.$('#' + fieldName + '_options').clone(true) : RB.$(document.createElement(fieldType));
+        input.removeAttr('id');
+        input.attr('name', fieldName);
+        input.addClass(fieldName);
+        input.addClass('editor');
+        input.removeClass('template');
+        input.removeClass('helper');
+        input.attr('_rb_width', field.width());
+        if(field_image){
+            input.attr('data-img', field_image);
+        }
+        // Add a date picker if field is a date field
+        if (field.hasClass("date")){
+            input.datepicker({ changeMonth: true,
+                               changeYear: true,
+                               closeText: 'Close',
+                               dateFormat: 'yy-mm-dd', 
+                               firstDay: 1,
+                               onClose: function(){ RB.$(this).focus(); },
+                               selectOtherMonths: true,
+                               showAnim:'',
+                               showButtonPanel: true,
+                               showOtherMonths: true
+                             });
+            // So that we won't need a datepicker button to re-show it
+            input.bind('mouseup', function(event){ RB.$(this).datepicker("show"); });
+        }
+        
+        // Copy the value in the field to the input element
+        value = ( fieldType=='select' ? field.children('.v').first().text() : RB.$.trim(field.text()) );
+        
+        // Select default value for select fields if none is already selected
+        if ((fieldType=='select') && input.children("option[selected='selected']") && value == '') {
+            value = input.children("option[selected='selected']:first").val();
+        }
+        
+        input.val(value);
 
-      // Select default value for select fields if none is already selected
-      if ((fieldType=='select') && input.children("option[selected='selected']") && value == '') {
-    	  value = input.children("option[selected='selected']:first").val();
-      }
-
-      input.val(value);
-      
-      // Record in the model's root element which input field had the last focus. We will
-      // use this information inside RB.Model.refresh() to determine where to return the
-      // focus after the element has been refreshed with info from the server.
-      input.focus( function(){ self.$.data('focus', RB.$(this).attr('name')); } ).
+        
+        // Record in the model's root element which input field had the last focus. We will
+        // use this information inside RB.Model.refresh() to determine where to return the
+        // focus after the element has been refreshed with info from the server.
+        input.focus( function(){ self.$.data('focus', RB.$(this).attr('name')); } ).
             blur( function(){ self.$.data('focus', ''); } );
-      
-      input.appendTo(editor);
+        if(fieldType=="select" && input.hasClass("image-dropdown")){
+            input.css("display", "none")
+            input.appendTo(editor);
+            var dropdown = convert_dropdown(input);
+            dropdown.appendTo(editor);
+        }
+        else {
+            input.appendTo(editor);
+        }
     });
-
-    this.displayEditor(editor);
-    this.editorDisplayed(editor);
-    return editor;
+      
+      this.displayEditor(editor);
+      this.editorDisplayed(editor);
+      return editor;
   },
   
   // Override this method to change the dialog title

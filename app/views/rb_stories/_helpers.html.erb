@@ -5,11 +5,14 @@
   <%- end %>
 </select>
 
-<select class="assigned_to_id helper" id="assigned_to_id_options">
+<select class="assigned_to_id helper image-dropdown" id="assigned_to_id_options">
   <!-- nobody -->
-  <option value>&nbsp;</option>
+  <option value style="display: none;">&nbsp;</option>
   <%- Principal.member_of(@project).each do |member| %>
-    <option value="<%= member.id %>"><%= h member.name %></option>
+  <!-- TODO: check avatar is available or not -->
+  <%- avatar = Nokogiri::HTML.parse(avatar(member)) %>
+  <%- avatar_url = avatar.xpath("//img").attribute("src") %>
+  <option value="<%= member.id %>" data-img="<%= avatar_url %>"><%= h member.name %></option>
   <%- end %>
 </select>
 
