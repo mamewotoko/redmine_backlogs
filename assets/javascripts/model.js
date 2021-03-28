@@ -4,7 +4,7 @@
   story, task, and impediment
   mostly about editing these.
 ***************************************/
-
+//TODO: move to other js file
 function convert_dropdown(target){
     var topoftop = $("<div/>", { class: "dropdown"});
     
@@ -20,7 +20,14 @@ function convert_dropdown(target){
         return element.find('.dropdown-selected').attr("data-value");
     }
     function initialize_dropdown(element){
-        update_dropdown(element.find('.dropdown-menu .dropdown-item'));
+        var selected = element.find('.dropdown-menu .dropdown-selected');
+        if(selected){
+            update_dropdown(selected);
+        }
+        else {
+            //select top
+            update_dropdown(element.find('.dropdown-menu .dropdown-item')[0]);
+        }
         element.find(".dropdown-menu .dropdown-item").click(function(){
             element.find(".dropdown-menu").find(".dropdown-selected").removeClass("dropdown-selected");
             element.find(".dropdown-menu").find(".dropdown-toggle").removeClass("dropdown-toggle");
@@ -45,6 +52,7 @@ function convert_dropdown(target){
         var cls = "dropdown-item";
         if($(e).attr("selected")){
             cls = cls + " dropdown-selected";
+            
         }
         var button = $("<button/>").attr({
             class: cls,
@@ -69,18 +77,9 @@ function convert_dropdown(target){
         });
         $(top).append(list);
     });
-    //$(target).parent().append(topoftop);
     initialize_dropdown($(topoftop));
     return topoftop;
 }
-
-// $(".image-dropdown").each(function(i, e){
-//     var topoftop = convert_dropdown(e);
-//     $(topoftop).css("display", "inline-block");
-//     $(this).css("display", "none");
-//     $(topoftop).insertBefore($(this));
-// });
-
 
 RB.Model = RB.Object.create({
 

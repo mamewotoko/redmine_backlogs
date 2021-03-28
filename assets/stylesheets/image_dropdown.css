@@ -1,24 +1,65 @@
-<style>
 .dropdown {
     height: 28px;
+    display: inline-block !important;
 }
 .dropdown-img {
     max-height: 24px;
+    margin-left: 0px;
+    margin-right: 4px;
 }
 .dropdown-toggle {
     position: relative;
-    width: 200px;
-    height: 26px;
-    margin: 2px;
+    margin-top: 0;
+    margin-bottom: 0;
 }
 .dropdown-item, .dropdown-toggle {
-    height: 48px;
-    padding: 2px;
+    height: 30px;
+    width: 200px;
+    height: 28px;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    margin: 0;
     text-align: left;
 }
 .dropdown-toggle::after {
     position: absolute;
     right: 5px;
-    top: 22px;
+    top: 12px;
 }
-</style>
+
+.dropdown-menu {
+    margin: 0;
+    padding: 0;
+}
+
+/* modify bootstrap js */
+select {
+    padding-top: 2px !important;
+}
+
+#header h1 {
+    font-size: 24px;
+    margin: 0;
+}
+
+#header input {
+    margin-bottom: 0;
+    margin-top: 0;
+}
+
+input.filter {
+    margin-bottom: 0;
+}
+
+.stories {
+    min-height: 34px !important;
+}
+
+#header label {
+    display: inline;
+}
+
+.drdn-trigger {
+    padding-top: 0;
+    padding-bottom: 0;
+}
