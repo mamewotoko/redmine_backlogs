@@ -518,7 +518,7 @@ ul li { vertical-align: bottom; } /* close IE7 gap between list items */
 #backlogs_container .header .editing .effective_date.editor{
   height:23px;
   line-height:27px;
-  width:75px;
+  width:12ex;
 }
 #backlogs_container .header .editing .description.editor{
   display:none;
