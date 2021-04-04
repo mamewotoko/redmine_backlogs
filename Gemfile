@@ -6,7 +6,8 @@ version_file = IO.read(redmine_version_file)
 redmine_version_minor = version_file.match(/MINOR =/).post_match.match(/\d/)[0].to_i
 redmine_version_major = version_file.match(/MAJOR =/).post_match.match(/\d/)[0].to_i
 
-gem "holidays", "< 3.0.0"
+# XXX holidays gem is installed by other plugin
+#gem "holidays", "< 3.0.0"
 gem "icalendar"
 # XXX "Bundler cannot continue." because nokogiri is specified twice
 #gem "nokogiri", ">= 1.6.7.2"
